@@ -9,6 +9,7 @@ public class GridManager : MonoBehaviour
     #region Variables
     [SerializeField] private int m_xSize;
     [SerializeField] private int m_ySize;
+    [SerializeField] private int maxStepCount = 20;
     private Grid m_grid;
     private Walker[] m_walkers = new Walker[4];
     #endregion
@@ -32,7 +33,12 @@ public class GridManager : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         for (int i = 0; i < m_walkers.Length; i++)
         {
-            m_walkers[i].Move();
+        
+            if(maxStepCount > m_walkers[i].stepsTaken )
+            {
+                m_walkers[i].Move();
+            }
+           
         }
         StartCoroutine(MoveTick());
     }
