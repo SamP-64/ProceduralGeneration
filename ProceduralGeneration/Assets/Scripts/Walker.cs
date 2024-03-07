@@ -10,6 +10,7 @@ public class Walker
     public Cell currentCell;
     private Vector2[] m_directions = { new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 0), new Vector2(-1, 0) };
     public int stepsTaken;
+ 
     public Walker(Cell _cell)
     {
         currentCell = _cell;

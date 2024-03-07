@@ -30,6 +30,7 @@ public class GridManager : MonoBehaviour
     }
     IEnumerator MoveTick()
     {
+
         yield return new WaitForSeconds(0.1f);
         for (int i = 0; i < m_walkers.Length; i++)
         {
