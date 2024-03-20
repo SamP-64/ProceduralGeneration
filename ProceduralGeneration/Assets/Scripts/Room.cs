@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public bool up;
+    public bool down;
+    public bool left;
+    public bool right;
+
     void Start()
     {
         

@@ -8,7 +8,7 @@ public class Grid
     #region Variables
     public int m_xSize, m_ySize;
     public Cell[,] cells;
-
+  
     #endregion
 
     public Grid(int _xsize, int _ySize)

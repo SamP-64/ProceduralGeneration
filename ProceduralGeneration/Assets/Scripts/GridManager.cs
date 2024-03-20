@@ -15,7 +15,17 @@ public class GridManager : MonoBehaviour
     private Walker[] m_walkers = new Walker[4];
 
     [SerializeField] Tilemap tilemap;
-    [SerializeField] Tile tile;
+    
+    
+    [SerializeField] Tile Middle;
+    [SerializeField] Tile topLeft;
+    [SerializeField] Tile topRight;
+    [SerializeField] Tile bottomLeft;
+    [SerializeField] Tile bottomRight;
+    [SerializeField] Tile left;
+    [SerializeField] Tile right;
+    [SerializeField] Tile top;
+    [SerializeField] Tile bottom;
     #endregion
 
     #region Private Functions
@@ -62,11 +72,88 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < m_ySize; y++)
             {
 
-                if (m_grid.cells[x, y].traversed)
+               if (m_grid.cells[x, y].traversed == false) { continue ; }
+
+                tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 1, 0), Middle);
+                tilemap.SetTile(new Vector3Int((x * 3) , (y * 3) + 2, 0), topLeft);
+                tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3) + 2, 0), topRight);
+                tilemap.SetTile(new Vector3Int((x * 3) , (y * 3) , 0), bottomLeft);
+                tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3) , 0), bottomRight);
+
+
+
+                if (m_grid.cells[x, y].GetNeighbour(Vector2.up) != null)
                 {
-                    tilemap.SetTile(new Vector3Int(x,y,0), tile);
+                 
+                    if(m_grid.cells[x, y].GetNeighbour(Vector2.up).traversed == false)
+                    {
+                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 2, 0), top);
+                    }
+                    else
+                    {
+                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 2, 0), Middle);
+                    }
+                  
                 }
-               
+                else
+                {
+                    tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 2, 0), top);
+                }
+
+                if (m_grid.cells[x, y].GetNeighbour(Vector2.down) != null)
+                {
+
+                    if (m_grid.cells[x, y].GetNeighbour(Vector2.down).traversed == false)
+                    {
+                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) , 0), bottom);
+                    }
+                    else
+                    {
+                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) , 0), Middle);
+                    }
+
+                }
+                else
+                {
+                    tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3), 0), bottom);
+                }
+
+                if (m_grid.cells[x, y].GetNeighbour(Vector2.right) != null)
+                {
+
+                    if (m_grid.cells[x, y].GetNeighbour(Vector2.right).traversed == false)
+                    {
+                        tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3) + 1, 0), right);
+                    }
+                    else
+                    {
+                        tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3) + 1, 0), Middle);
+                    }
+
+                }
+                else
+                {
+                    tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3) + 1, 0), right);
+                }
+
+                if (m_grid.cells[x, y].GetNeighbour(Vector2.left) != null)
+                {
+
+                    if (m_grid.cells[x, y].GetNeighbour(Vector2.left).traversed == false)
+                    {
+                        tilemap.SetTile(new Vector3Int((x * 3) , (y * 3) + 1, 0), left);
+                    }
+                    else
+                    {
+                        tilemap.SetTile(new Vector3Int((x * 3), (y * 3) + 1, 0), Middle);
+                    }
+
+                }
+                else
+                {
+                    tilemap.SetTile(new Vector3Int((x * 3), (y * 3) + 1, 0), left);
+                }
+
             }
         }
  

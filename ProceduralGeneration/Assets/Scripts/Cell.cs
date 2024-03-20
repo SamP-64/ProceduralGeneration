@@ -18,6 +18,7 @@ namespace GridSystem
         private string m_cellContent;
         public Color cellDebugColour;
         public bool traversed = false;
+        public Room room;
         #endregion
 
         public Cell(Vector2 _pos)

@@ -152,11 +152,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc952515467452740b69b6d90c09206b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_xSize: 10
-  m_ySize: 10
-  maxStepCount: 4
+  m_xSize: 5
+  m_ySize: 5
+  maxStepCount: 25
   tilemap: {fileID: 1248534078}
-  tile: {fileID: 11400000, guid: 6315362a529c26444b9db807eb04d0fc, type: 2}
+  Middle: {fileID: 11400000, guid: 6315362a529c26444b9db807eb04d0fc, type: 2}
+  topLeft: {fileID: 11400000, guid: fb3a08c88991acf418bb3897ac3c1867, type: 2}
+  topRight: {fileID: 11400000, guid: 7dcf2cacedb61424d8de9cbfb2aa342d, type: 2}
+  bottomLeft: {fileID: 11400000, guid: 221e67a55e26a504ea27d976c3522957, type: 2}
+  bottomRight: {fileID: 11400000, guid: 619af8f62ee46d041a8c1badd7c51e31, type: 2}
+  left: {fileID: 11400000, guid: 33e8aca321dd71540a2803574e947763, type: 2}
+  right: {fileID: 11400000, guid: 361ad4f93e0b6974aa340f4ea949da09, type: 2}
+  top: {fileID: 11400000, guid: 83eb8d0090d70424280d87c6cca3523d, type: 2}
+  bottom: {fileID: 11400000, guid: 7baec31a2fedc91489f26a5c7fe6865c, type: 2}
 --- !u!4 &263412381
 Transform:
   m_ObjectHideFlags: 0
