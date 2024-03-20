@@ -17,6 +17,7 @@ namespace GridSystem
         };
         private string m_cellContent;
         public Color cellDebugColour;
+        public bool traversed = false;
         #endregion
 
         public Cell(Vector2 _pos)
@@ -26,9 +27,6 @@ namespace GridSystem
             cellDebugColour = Color.grey;
         }
 
-        #region Private Functions
-
-        #endregion
 
         #region Public Functions
         public string GetCellContent()

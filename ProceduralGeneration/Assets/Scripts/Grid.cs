@@ -6,7 +6,7 @@ using UnityEngine;
 public class Grid
 {
     #region Variables
-    private int m_xSize, m_ySize;
+    public int m_xSize, m_ySize;
     public Cell[,] cells;
 
     #endregion

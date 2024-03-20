@@ -25,6 +25,7 @@ public class Walker
         {
             currentCell = currentCell.GetNeighbour(selectedDirection);
             currentCell.cellDebugColour = Color.black;
+            currentCell.traversed = true;
             position = currentCell.position;
         }
         stepsTaken++;

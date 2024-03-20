@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GridManager : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int maxStepCount = 20;
     private Grid m_grid;
     private Walker[] m_walkers = new Walker[4];
+
+    [SerializeField] Tilemap tilemap;
+    [SerializeField] Tile tile;
     #endregion
 
     #region Private Functions
@@ -39,9 +43,34 @@ public class GridManager : MonoBehaviour
             {
                 m_walkers[i].Move();
             }
+            else
+            {
+                CreateRooms();
+            }
            
         }
         StartCoroutine(MoveTick());
+    }
+
+    public void CreateRooms()
+    {
+     
+        
+        
+        for (int x = 0; x < m_xSize; x++)
+        {
+            for (int y = 0; y < m_ySize; y++)
+            {
+
+                if (m_grid.cells[x, y].traversed)
+                {
+                    tilemap.SetTile(new Vector3Int(x,y,0), tile);
+                }
+               
+            }
+        }
+ 
+    
     }
 
     private void OnDrawGizmos()
@@ -68,8 +97,5 @@ public class GridManager : MonoBehaviour
 
     }
 
-    #endregion
-
-    #region Public Functions
     #endregion
 }
