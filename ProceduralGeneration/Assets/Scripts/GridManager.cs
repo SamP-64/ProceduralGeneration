@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using TMPro;
 
 public class GridManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] Tilemap tilemap;
 
+    public MovePlayer player;
 
     [SerializeField] Tile Middle;
     [SerializeField] Tile topLeft;
@@ -37,48 +39,101 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] Tile wall;
     [SerializeField] Tile empty;
+
+    public TMP_InputField xSizeInputField;
+    public TMP_InputField ySizeInputField;
+    public TMP_InputField walkersInputField;
+    public TMP_InputField maxStepsInputField;
     #endregion
 
     #region Private Functions
-    private void OnEnable()
+
+    //OnEnable()
+
+    public GameObject panel;
+    public void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            
+            panel.SetActive(!panel.activeSelf); // Toggle panel on / off
+        }
+    }
+    public void Generate()
+    {
+
+        string maxSteps = maxStepsInputField.text;
+        int.TryParse(maxSteps, out maxStepCount);
+
+        string walkers = walkersInputField.text;
+        int.TryParse(walkers, out m_walkerCount);
+
+
+        string x = xSizeInputField.text;
+        int.TryParse(x, out m_xSize);
+
+        string y = ySizeInputField.text;
+        int.TryParse(y, out m_ySize);
+
         m_grid = new Grid(m_xSize, m_ySize);
         origin = new Vector3Int(Mathf.FloorToInt(m_xSize / 2), Mathf.FloorToInt(m_ySize / 2));
+
+        m_walkers = null;
+        m_walkers = new List<Walker>();
 
         for (int i = 0; i < m_walkerCount; i++)
         {
             m_walkers.Add(new Walker(m_grid.cells[(int)origin.x, (int)origin.y], maxStepCount));
         }
-
+        StartCoroutine(MoveTick());
+    }
+    public Vector3Int GetOrigin()
+    {
+        return origin;
     }
 
     public void Start()
     {
-        StartCoroutine(MoveTick());
+        player = player.GetComponent<MovePlayer>();
+       // StartCoroutine(MoveTick());
     }
     IEnumerator MoveTick()
     {
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.01f);
+        int deadWalkers = 0;
         for (int i = 0; i < m_walkers.Count; i++)
         {
+            m_walkers[i].Move();
 
-            if (maxStepCount > m_walkers[i].stepsTaken)
+            if (m_walkers[i].dead)
             {
-                m_walkers[i].Move();
+                deadWalkers++;
             }
-            else
-            {
-                CreateTiles();
-                CheckForWalls();
-                AddStartTile();
-                AddEndTile();
-                break;
-            }
+        }
+
+        if (deadWalkers < m_walkerCount)
+        {
+            StartCoroutine(MoveTick());
+        }
+        else
+        {
+            //  m_drawWalkers = false;
+
+
+            CreateTiles();
+            CheckForWalls();
+            player.StartPosition(origin);
+            AddStartTile();
+            AddEndTile();
+
+            Debug.Log("JK");
 
         }
-        StartCoroutine(MoveTick());
+
+
     }
+
 
     private void AddStartTile()
     {
@@ -103,8 +158,8 @@ public class GridManager : MonoBehaviour
         m_startCell.cellContent = startTile;
         tilemap.SetTile(origin, startTile);
 
-      //  var a = Instantiate(m_startCell.cellContent, m_startCell.position + (Vector2.one / 2), Quaternion.identity);
-      //  a.transform.parent = m_tileObjectBin.transform;
+        //  var a = Instantiate(m_startCell.cellContent, m_startCell.position + (Vector2.one / 2), Quaternion.identity);
+        //  a.transform.parent = m_tileObjectBin.transform;
 
     }
     private void AddEndTile()
@@ -134,7 +189,6 @@ public class GridManager : MonoBehaviour
         //  a.transform.parent = m_tileObjectBin.transform;
 
     }
-
     public void CreateRooms()
     {
 
@@ -251,8 +305,6 @@ public class GridManager : MonoBehaviour
 
     void CreateTiles()
     {
-
-
 
         for (int x = 0; x < m_xSize; x++)
         {
