@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace GridSystem
 {
     public class Cell
     {
         #region Variables
-        public Vector2 position;
+        public Vector3Int position;
         private Dictionary<Vector2, Cell> m_neighbours = new Dictionary<Vector2, Cell>()
         {
             {Vector2.up, null},
@@ -15,24 +16,24 @@ namespace GridSystem
             {Vector2.down, null},
             {Vector2.left, null}
         };
-        private string m_cellContent;
+        public Tile cellContent;
         public Color cellDebugColour;
         public bool traversed = false;
         public Room room;
         #endregion
 
-        public Cell(Vector2 _pos)
+        public Cell(Vector3Int _pos)
         {
             position = _pos;
-            m_cellContent = "Empty";
+           // m_cellContent = "Empty";
             cellDebugColour = Color.grey;
         }
 
 
         #region Public Functions
-        public string GetCellContent()
+        public Tile GetCellContent()
         {
-            return m_cellContent;
+            return cellContent;
         }
         public Cell GetNeighbour(Vector2 Direction)
         {
@@ -57,7 +58,7 @@ namespace GridSystem
                     + "Position:"
                         + position + "\n"
                     + "Content:"
-                        + m_cellContent
+                        + cellContent
                     + "\n "
                     );
         }

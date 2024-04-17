@@ -152,9 +152,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc952515467452740b69b6d90c09206b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_xSize: 5
-  m_ySize: 5
+  m_xSize: 50
+  m_ySize: 50
   maxStepCount: 25
+  m_walkerCount: 5
   tilemap: {fileID: 1248534078}
   Middle: {fileID: 11400000, guid: 6315362a529c26444b9db807eb04d0fc, type: 2}
   topLeft: {fileID: 11400000, guid: fb3a08c88991acf418bb3897ac3c1867, type: 2}
@@ -165,6 +166,10 @@ MonoBehaviour:
   right: {fileID: 11400000, guid: 361ad4f93e0b6974aa340f4ea949da09, type: 2}
   top: {fileID: 11400000, guid: 83eb8d0090d70424280d87c6cca3523d, type: 2}
   bottom: {fileID: 11400000, guid: 7baec31a2fedc91489f26a5c7fe6865c, type: 2}
+  startTile: {fileID: 11400000, guid: da97d309e3f789b4a83fc796a67aa2a5, type: 2}
+  endTile: {fileID: 11400000, guid: 711bd1537ef324b48a1018519a8d02ce, type: 2}
+  wall: {fileID: 11400000, guid: 1ab8022cbc8a3da42a50d169aa897758, type: 2}
+  empty: {fileID: 11400000, guid: 8bbc46ca98ff1674daeaabfd510a9d8c, type: 2}
 --- !u!4 &263412381
 Transform:
   m_ObjectHideFlags: 0
@@ -266,13 +271,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
+  m_LocalPosition: {x: 5, y: 10, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,17 +6,23 @@ using UnityEngine;
 
 public class Walker
 {
-    public Vector2 position;
+    public Vector3Int position;
     public Cell currentCell;
     private Vector2[] m_directions = { new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 0), new Vector2(-1, 0) };
     public int stepsTaken;
  
-    public Walker(Cell _cell)
+    public Walker(Cell _cell,int maxSteps)
     {
         currentCell = _cell;
         position = _cell.position;
     }
 
+    public float GetDistanceFrom(Vector3Int _from)
+    {
+        float dist = 0;
+        dist = Vector3Int.Distance(_from, position);
+        return dist;
+    }
 
     public void Move()
     {
