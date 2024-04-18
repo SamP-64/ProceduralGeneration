@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using TMPro;
+using static UnityEngine.Tilemaps.Tile;
 
 public class GridManager : MonoBehaviour
 {
@@ -95,7 +96,8 @@ public class GridManager : MonoBehaviour
     public void Start()
     {
         player = player.GetComponent<MovePlayer>();
-       // StartCoroutine(MoveTick());
+        // StartCoroutine(MoveTick());
+        wall.colliderType = Tile.ColliderType.Grid;
     }
     IEnumerator MoveTick()
     {
@@ -162,6 +164,8 @@ public class GridManager : MonoBehaviour
         //  a.transform.parent = m_tileObjectBin.transform;
 
     }
+
+    public GameObject stairsCollider;
     private void AddEndTile()
     {
         List<float> walkerDistances = new List<float>();
@@ -183,6 +187,7 @@ public class GridManager : MonoBehaviour
         Cell c = m_walkers[iLargest].currentCell;
         c.cellContent = endTile;
         tilemap.SetTile(new Vector3Int(c.position.x, c.position.y, c.position.z), endTile);
+        stairsCollider.transform.position = new Vector3Int(c.position.x, c.position.y, c.position.z);
 
 
         //  var a = Instantiate(m_walkers[iLargest].currentCell.cellContent, c.position + (Vector2.one / 2), Quaternion.identity);
@@ -391,6 +396,7 @@ public class GridManager : MonoBehaviour
 
                 if (isSurrounded == false)
                 {
+                    wall.colliderType = Tile.ColliderType.Grid;
                     tilemap.SetTile(new Vector3Int(x, y, 0), wall);
                 }
 
