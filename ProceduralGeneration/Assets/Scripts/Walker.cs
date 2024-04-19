@@ -27,7 +27,7 @@ public class Walker
         return dist;
     }
 
-    public void Move()
+    public void Move(int gridSizeX, int gridSizeY)
     {
 
         if (stepsTaken >= maxSteps)
@@ -36,8 +36,20 @@ public class Walker
             return;
         }
 
+        Debug.Log(gridSizeY);
+
         Vector2 selectedDirection = m_directions[Random.Range(0, m_directions.Length)];
-        if (currentCell.GetNeighbour(selectedDirection) != null)
+       
+        int x = 0;
+        int y = 0;
+
+        if (currentCell.GetNeighbour(selectedDirection) != null )
+        {
+            x = currentCell.GetNeighbour(selectedDirection).position.x;
+            y = currentCell.GetNeighbour(selectedDirection).position.y; // Values to stop walkers moving to the edge of the grid
+        }
+   
+        if (currentCell.GetNeighbour(selectedDirection) != null && x != 0 && y != 0 && y != gridSizeY - 1 && x != gridSizeX - 1)
         {
             currentCell = currentCell.GetNeighbour(selectedDirection);
             currentCell.cellDebugColour = Color.black;

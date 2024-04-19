@@ -55,22 +55,30 @@ public class MovePlayer : MonoBehaviour
 
    
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        Vector3 hitPosition = collision.GetContact(0).point;
-        Vector3Int cellPosition = tilemap.WorldToCell(hitPosition);
-        TileBase tile = tilemap.GetTile(cellPosition);
+    //void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    Vector3 hitPosition = collision.GetContact(0).point;
+    //    Vector3Int cellPosition = tilemap.WorldToCell(hitPosition);
+    //    TileBase tile = tilemap.GetTile(cellPosition);
 
-        if (tile != null)
-        {
-            Debug.Log("Collided with tile: " + tile.name);
-        }
-        if ( collision.gameObject.name == "StairsCollider")
+    //    if (tile != null)
+    //    {
+    //        Debug.Log("Collided with tile: " + tile.name);
+    //    }
+    //    Debug.Log(collision.gameObject.name);
+    //    if ( collision.gameObject.name == "StairsCollider")
+    //    {
+    //        Debug.Log("Next");
+    //        gridManager.Generate();
+    //    }
+    //}
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == "StairsCollider")
         {
             Debug.Log("Next");
             gridManager.Generate();
         }
     }
-
-
 }

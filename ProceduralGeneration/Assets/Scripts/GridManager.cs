@@ -60,6 +60,7 @@ public class GridManager : MonoBehaviour
             panel.SetActive(!panel.activeSelf); // Toggle panel on / off
         }
     }
+ 
     public void Generate()
     {
 
@@ -74,7 +75,7 @@ public class GridManager : MonoBehaviour
         int.TryParse(x, out m_xSize);
 
         string y = ySizeInputField.text;
-        int.TryParse(y, out m_ySize);
+        int.TryParse(y, out m_ySize); // Get Values From Input Fields
 
         m_grid = new Grid(m_xSize, m_ySize);
         origin = new Vector3Int(Mathf.FloorToInt(m_xSize / 2), Mathf.FloorToInt(m_ySize / 2));
@@ -102,11 +103,11 @@ public class GridManager : MonoBehaviour
     IEnumerator MoveTick()
     {
 
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.001f);
         int deadWalkers = 0;
         for (int i = 0; i < m_walkers.Count; i++)
         {
-            m_walkers[i].Move();
+            m_walkers[i].Move(m_xSize, m_ySize);
 
             if (m_walkers[i].dead)
             {
@@ -187,7 +188,7 @@ public class GridManager : MonoBehaviour
         Cell c = m_walkers[iLargest].currentCell;
         c.cellContent = endTile;
         tilemap.SetTile(new Vector3Int(c.position.x, c.position.y, c.position.z), endTile);
-        stairsCollider.transform.position = new Vector3Int(c.position.x, c.position.y, c.position.z);
+        stairsCollider.transform.position = new Vector3(c.position.x + 0.5f , c.position.y + 0.5f, c.position.z);
 
 
         //  var a = Instantiate(m_walkers[iLargest].currentCell.cellContent, c.position + (Vector2.one / 2), Quaternion.identity);
