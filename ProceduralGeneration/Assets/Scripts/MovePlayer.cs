@@ -37,6 +37,8 @@ public class MovePlayer : MonoBehaviour
 
             transform.Translate(-movement);
         }
+
+        gridManager.CheckPickup(playerTilePosition);
     }
 
     //void OnCollisionEnter2D(Collision2D collision)
@@ -53,7 +55,7 @@ public class MovePlayer : MonoBehaviour
     //    }
     //}
 
-   
+
 
     //void OnCollisionEnter2D(Collision2D collision)
     //{
@@ -73,12 +75,19 @@ public class MovePlayer : MonoBehaviour
     //    }
     //}
 
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+       
+        
         if (collision.gameObject.name == "StairsCollider")
         {
             Debug.Log("Next");
             gridManager.Generate();
         }
+
+    //    gridManager.CheckPickup(collision);
+
     }
 }

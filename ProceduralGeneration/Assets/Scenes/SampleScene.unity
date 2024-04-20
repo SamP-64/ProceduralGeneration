@@ -391,6 +391,7 @@ MonoBehaviour:
   tilemap: {fileID: 1248534078}
   player: {fileID: 1762470006}
   levelText: {fileID: 1299493309}
+  coinText: {fileID: 0}
   Middle: {fileID: 11400000, guid: 6315362a529c26444b9db807eb04d0fc, type: 2}
   topLeft: {fileID: 11400000, guid: fb3a08c88991acf418bb3897ac3c1867, type: 2}
   topRight: {fileID: 11400000, guid: 7dcf2cacedb61424d8de9cbfb2aa342d, type: 2}
@@ -404,6 +405,7 @@ MonoBehaviour:
   endTile: {fileID: 11400000, guid: 711bd1537ef324b48a1018519a8d02ce, type: 2}
   wall: {fileID: 11400000, guid: 1ab8022cbc8a3da42a50d169aa897758, type: 2}
   empty: {fileID: 11400000, guid: 8bbc46ca98ff1674daeaabfd510a9d8c, type: 2}
+  pickup: {fileID: 11400000, guid: 4304c1a024c53284ba7fe16efb052f44, type: 2}
   xSizeInputField: {fileID: 767075612}
   ySizeInputField: {fileID: 1521669134}
   walkersInputField: {fileID: 2068184644}

@@ -26,7 +26,10 @@ public class GridManager : MonoBehaviour
 
     public MovePlayer player;
     int level;
+    int coins;
     public TextMeshProUGUI levelText;
+    public TextMeshProUGUI coinText;
+
 
     [SerializeField] Tile Middle;
     [SerializeField] Tile topLeft;
@@ -43,6 +46,8 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] Tile wall;
     [SerializeField] Tile empty;
+
+    [SerializeField] Tile pickup;
 
     public TMP_InputField xSizeInputField;
     public TMP_InputField ySizeInputField;
@@ -93,6 +98,7 @@ public class GridManager : MonoBehaviour
         }
         //StartCoroutine(MoveTick());
         MoveTick();
+
     }
     Vector2  RandomStartPoint()
     {
@@ -140,6 +146,8 @@ public class GridManager : MonoBehaviour
             CreateTiles();
             CheckForWalls();
             player.StartPosition(origin);
+
+            PlacePickup();
             AddStartTile();
             AddEndTile();
 
@@ -178,6 +186,7 @@ public class GridManager : MonoBehaviour
     }
 
     public GameObject stairsCollider;
+
     private void AddEndTile()
     {
      
@@ -427,6 +436,40 @@ public class GridManager : MonoBehaviour
 
     }
 
+    void PlacePickup()
+    {
+
+        for (int x = 0; x < m_xSize; x++)
+        {
+            for (int y = 0; y < m_ySize; y++)
+            {
+
+                if (m_grid.cells[x, y].traversed == true)
+                {
+               
+                    if (Random.Range(0, (m_xSize * m_ySize) / 7 ) == 0)
+                    {
+                       
+                        tilemap.SetTile(new Vector3Int(x, y, 0), pickup);
+                    }
+                    
+                }
+
+            }
+        }
+    }
+    public void CheckPickup(Vector3Int position)
+    {
+
+        TileBase collidedTile = tilemap.GetTile(position);    // Get the tile at the collided position
+
+        if (collidedTile == pickup )
+        {
+            tilemap.SetTile(position, Middle);   // Replace the coin tile with the floor tile
+            coins++;
+            coinText.text = "Coins: " + coins;
+        }
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
