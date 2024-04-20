@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
-public static class AStar
+public static class AStar // Found Online to use
 {
     public static List<Vector3Int> FindPath(Vector3Int startCell, Vector3Int goalCell, Tilemap tilemap)
     {
@@ -71,7 +71,6 @@ public static class AStar
 
     static float Heuristic(Vector3Int a, Vector3Int b)
     {
-        // Simple Manhattan distance heuristic
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
 

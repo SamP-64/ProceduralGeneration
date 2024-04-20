@@ -12,13 +12,21 @@ namespace GridSystem
         private Dictionary<Vector2, Cell> m_neighbours = new Dictionary<Vector2, Cell>()
         {
             {Vector2.up, null},
+            
             {Vector2.right, null},
+            
             {Vector2.down, null},
-            {Vector2.left, null}
+           
+            {Vector2.left, null},
+             {Vector2.down + Vector2.left, null},
+            {Vector2.up + Vector2.left, null},
+            {Vector2.up + Vector2.right, null},
+            {Vector2.down + Vector2.right, null}
         };
         public Tile cellContent;
         public Color cellDebugColour;
         public bool traversed = false;
+        public bool wall = false;
         public Room room;
         public float heat = 0;
         #endregion
@@ -41,12 +49,17 @@ namespace GridSystem
             return m_neighbours[Direction];
         }
 
-        public void SetNeighbours(Cell _up, Cell _right, Cell _down, Cell _left)
+        public void SetNeighbours(Cell _up, Cell _right, Cell _down, Cell _left, Cell _upLeft, Cell _upRight, Cell _downRight, Cell _downLeft)
         {
             m_neighbours[Vector2.up] = _up;
             m_neighbours[Vector2.right] = _right;
             m_neighbours[Vector2.down] = _down;
             m_neighbours[Vector2.left] = _left;
+
+            m_neighbours[Vector2.up + Vector2.left] = _upLeft;
+            m_neighbours[Vector2.up + Vector2.right] = _upRight;
+            m_neighbours[Vector2.down + Vector2.left] = _downLeft;
+            m_neighbours[Vector2.down + Vector2.right] = _downRight;
 
             if (_up == null || _right == null || _down == null || _left == null)
             {
@@ -76,11 +89,17 @@ namespace GridSystem
             int n = 0;
             foreach (KeyValuePair<Vector2, Cell> entry in m_neighbours)
             {
+                Debug.Log(n);
                 if (entry.Value != null)
                 {
                     weights[n] = 1 - entry.Value.heat;
                 }
                 n++;
+
+                if (n == 4) // Check if n reaches 4
+                {
+                    break; // Exit the loop
+                }
             }
             float[] randoms = new float[4]
             {

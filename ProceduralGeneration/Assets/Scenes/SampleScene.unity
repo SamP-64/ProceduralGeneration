@@ -402,6 +402,8 @@ MonoBehaviour:
   right: {fileID: 11400000, guid: 361ad4f93e0b6974aa340f4ea949da09, type: 2}
   top: {fileID: 11400000, guid: 83eb8d0090d70424280d87c6cca3523d, type: 2}
   bottom: {fileID: 11400000, guid: 7baec31a2fedc91489f26a5c7fe6865c, type: 2}
+  topBottom: {fileID: 11400000, guid: 37cbf71a5c242384a866d35cd62aac6d, type: 2}
+  topBottomLeft: {fileID: 11400000, guid: 59c421aee1133084daa1551e2433695a, type: 2}
   startTile: {fileID: 11400000, guid: da97d309e3f789b4a83fc796a67aa2a5, type: 2}
   endTile: {fileID: 11400000, guid: 711bd1537ef324b48a1018519a8d02ce, type: 2}
   wall: {fileID: 11400000, guid: 1ab8022cbc8a3da42a50d169aa897758, type: 2}

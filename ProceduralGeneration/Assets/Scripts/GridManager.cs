@@ -37,10 +37,14 @@ public class GridManager : MonoBehaviour
     [SerializeField] Tile topRight;
     [SerializeField] Tile bottomLeft;
     [SerializeField] Tile bottomRight;
+
     [SerializeField] Tile left;
     [SerializeField] Tile right;
     [SerializeField] Tile top;
     [SerializeField] Tile bottom;
+
+    [SerializeField] Tile topBottom;
+    [SerializeField] Tile topBottomLeft;
 
     [SerializeField] Tile startTile;
     [SerializeField] Tile endTile;
@@ -65,11 +69,11 @@ public class GridManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            
+
             panel.SetActive(!panel.activeSelf); // Toggle panel on / off
         }
     }
- 
+
     public void Generate()
     {
         level++;
@@ -101,7 +105,7 @@ public class GridManager : MonoBehaviour
         MoveTick();
 
     }
-    Vector2  RandomStartPoint()
+    Vector2 RandomStartPoint()
     {
         int x = Random.Range(1, m_xSize - 1);
         int y = Random.Range(1, m_ySize - 1);
@@ -122,7 +126,7 @@ public class GridManager : MonoBehaviour
     void MoveTick()
     {
 
-      //  yield return new WaitForSeconds(0.001f);
+        //  yield return new WaitForSeconds(0.001f);
         int deadWalkers = 0;
         for (int i = 0; i < m_walkers.Count; i++)
         {
@@ -151,7 +155,7 @@ public class GridManager : MonoBehaviour
             PlacePickup();
             AddStartTile();
             AddEndTile();
-          
+
         }
 
 
@@ -190,11 +194,11 @@ public class GridManager : MonoBehaviour
 
     private void AddEndTile()
     {
-     
+
         List<float> walkerDistances = new List<float>();
         for (int i = 0; i < m_walkers.Count; i++)
         {
-            
+
             walkerDistances.Add(m_walkers[i].GetDistanceFrom(origin));
             Debug.Log(m_walkers[i].position + " is " + walkerDistances[i] + " from " + origin);
         }
@@ -212,7 +216,7 @@ public class GridManager : MonoBehaviour
         Cell c = m_walkers[iLargest].currentCell;
         c.cellContent = endTile;
         tilemap.SetTile(new Vector3Int(Mathf.RoundToInt(c.position.x), Mathf.RoundToInt(c.position.y), 0), endTile);
-        stairsCollider.transform.position = new Vector2(c.position.x + 0.5f , c.position.y + 0.5f);
+        stairsCollider.transform.position = new Vector2(c.position.x + 0.5f, c.position.y + 0.5f);
 
         enemy.transform.position = stairsCollider.transform.position;
         //  Vector2 vector = new Vector2 (c.position.x, c.position.y );
@@ -358,7 +362,7 @@ public class GridManager : MonoBehaviour
 
     }
 
-    void CheckForWalls()
+    void CheckForWallsOld()
     {
 
 
@@ -375,47 +379,63 @@ public class GridManager : MonoBehaviour
                 bool rightEmpty = true;
                 bool upEmpty = true;
                 bool downEmpty = true;
-                bool topLeftEmpty = true;
-                bool topRightEmpty = true;
-                bool downLeftEmpty = true;
-                bool downRightEmpty = true;
-
 
                 if (m_grid.cells[x, y].GetNeighbour(Vector2.up) != null)
                 {
 
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.up).traversed == true)
+                    if (m_grid.cells[x, y].GetNeighbour(Vector2.up).traversed == false)
                     {
                         isSurrounded = false;
                         upEmpty = false;
                     }
                 }
+                else
+                {
+
+                    isSurrounded = false;
+                    upEmpty = false;
+                }
                 if (m_grid.cells[x, y].GetNeighbour(Vector2.down) != null)
                 {
 
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.down).traversed == true)
+                    if (m_grid.cells[x, y].GetNeighbour(Vector2.down).traversed == false)
                     {
                         isSurrounded = false;
                         downEmpty = false;
                     }
                 }
+                else
+                {
+                    isSurrounded = false;
+                    downEmpty = false;
+                }
                 if (m_grid.cells[x, y].GetNeighbour(Vector2.left) != null)
                 {
 
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.left).traversed == true)
+                    if (m_grid.cells[x, y].GetNeighbour(Vector2.left).traversed == false)
                     {
                         isSurrounded = false;
                         leftEmpty = false;
                     }
                 }
+                else
+                {
+                    isSurrounded = false;
+                    leftEmpty = false;
+                }
                 if (m_grid.cells[x, y].GetNeighbour(Vector2.right) != null)
                 {
 
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.right).traversed == true)
+                    if (m_grid.cells[x, y].GetNeighbour(Vector2.right).traversed == false)
                     {
                         isSurrounded = false;
                         rightEmpty = false;
                     }
+                }
+                else
+                {
+                    isSurrounded = false;
+                    rightEmpty = false;
                 }
 
 
@@ -424,19 +444,307 @@ public class GridManager : MonoBehaviour
                 {
                     wall.colliderType = Tile.ColliderType.Grid;
                     tilemap.SetTile(new Vector3Int(x, y, 0), wall);
+                    m_grid.cells[x, y].wall = true;
                 }
 
-                //if(rightEmpty && !upEmpty && !leftEmpty && !downEmpty)
+                if (upEmpty && !downEmpty && !leftEmpty && !rightEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), top);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && downEmpty && !leftEmpty && !rightEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), bottom);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && !downEmpty && leftEmpty && !rightEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), left);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && !downEmpty && !leftEmpty && rightEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), right);
+                    m_grid.cells[x, y].wall = true;
+                }
+                //else if (!upEmpty && downEmpty && !leftEmpty && rightEmpty)
                 //{
-                //    tilemap.SetTile(new Vector3Int(x, y, 0), right);
-                //    Debug.Log("Right");
+                //    tilemap.SetTile(new Vector3Int(x, y, 0), bottomRight);
                 //}
+                //else if (upEmpty && !downEmpty && leftEmpty && !rightEmpty)
+                //{
+                //    tilemap.SetTile(new Vector3Int(x, y, 0), topLeft);
+                //}
+                //else if (!upEmpty && downEmpty && leftEmpty && !rightEmpty)
+                //{
+                //    tilemap.SetTile(new Vector3Int(x, y, 0), bottomLeft);
+                //}
+                //else if (upEmpty && !downEmpty && !leftEmpty && rightEmpty)
+                //{
+                //    tilemap.SetTile(new Vector3Int(x, y, 0), topRight);
+                //}
+                //else if (upEmpty && downEmpty && !leftEmpty && !rightEmpty)
+                //{
+                //    tilemap.SetTile(new Vector3Int(x, y, 0), topBottom);
+                //}
+                //else if (!upEmpty && !downEmpty && leftEmpty && rightEmpty)
+                //{
+
+                //    Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 90f), Vector3.one); // Rotate by 90 degrees
+                //    tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
+
+                //    tilemap.SetTile(new Vector3Int(x, y, 0), topBottom);
+
+                //}
+
+
+
+                if (!rightEmpty && !upEmpty && !leftEmpty && !downEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), empty);
+                }
 
             }
         }
 
 
+
+
     }
+
+    void CheckForWalls()
+    {
+        for (int x = 0; x < m_xSize; x++)
+        {
+            for (int y = 0; y < m_ySize; y++)
+            {
+                if (m_grid.cells[x, y].traversed) continue;
+
+                bool isSurrounded = true;
+                bool leftEmpty = true;
+                bool rightEmpty = true;
+                bool upEmpty = true;
+                bool downEmpty = true;
+
+                bool upLeftEmpty = true;
+                bool upRightEmpty = true;
+                bool downLeftEmpty = true;
+                bool downRightEmpty = true;
+
+                // Check horizontal and vertical neighbors
+                if (m_grid.cells[x, y].GetNeighbour(Vector2.up) != null)
+                {
+                    if (!m_grid.cells[x, y].GetNeighbour(Vector2.up).traversed)
+                    {
+                        isSurrounded = false;
+                        upEmpty = false;
+                    }
+                }
+                else
+                {
+                    isSurrounded = false;
+                    upEmpty = false;
+                }
+
+                if (m_grid.cells[x, y].GetNeighbour(Vector2.down) != null)
+                {
+                    if (!m_grid.cells[x, y].GetNeighbour(Vector2.down).traversed)
+                    {
+                        isSurrounded = false;
+                        downEmpty = false;
+                    }
+                }
+                else
+                {
+                    isSurrounded = false;
+                    downEmpty = false;
+                }
+                if (m_grid.cells[x, y].GetNeighbour(Vector2.left) != null )
+                {
+                    if (!m_grid.cells[x, y].GetNeighbour(Vector2.left).traversed)
+                    {
+                        isSurrounded = false;
+                        leftEmpty = false;
+
+                    }
+                }
+                else
+                {
+                    isSurrounded = false;
+                    leftEmpty = false;
+                }
+
+                if (m_grid.cells[x, y].GetNeighbour(Vector2.right) != null)
+                {
+                    if (!m_grid.cells[x, y].GetNeighbour(Vector2.right).traversed)
+                    {
+                        isSurrounded = false;
+                        rightEmpty = false;
+                    }
+                }
+                else
+                { 
+                isSurrounded = false;
+                rightEmpty = false;
+                }
+
+                // Check diagonal neighbors
+                if (m_grid.cells[x, y].GetNeighbour(new Vector2(1, 1)) != null)
+                {
+                    if(!m_grid.cells[x, y].GetNeighbour(new Vector2(1, 1)).traversed)
+                    {
+                        isSurrounded = false;
+                        upRightEmpty = false;
+                    }
+                
+                }
+                if (m_grid.cells[x, y].GetNeighbour(new Vector2(1, -1)) != null && !m_grid.cells[x, y].GetNeighbour(new Vector2(1, -1)).traversed)
+                {
+                    isSurrounded = false;
+                    downRightEmpty = false;
+                }
+                if (m_grid.cells[x, y].GetNeighbour(new Vector2(-1, 1)) != null && !m_grid.cells[x, y].GetNeighbour(new Vector2(-1, 1)).traversed)
+                {
+                    isSurrounded = false;
+                    upLeftEmpty = false;
+                }
+                if (m_grid.cells[x, y].GetNeighbour(new Vector2(-1, -1)) != null && !m_grid.cells[x, y].GetNeighbour(new Vector2(-1, -1)).traversed)
+                {
+                    isSurrounded = false;
+                    downLeftEmpty = false;
+                }
+
+                Matrix4x4 defaultMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 0), Vector3.one);
+                tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), defaultMatrix);
+
+                // Set tiles based on neighboring conditions
+                if (!isSurrounded)
+                {
+                    wall.colliderType = Tile.ColliderType.Grid;
+                    tilemap.SetTile(new Vector3Int(x, y, 0), wall);
+                    m_grid.cells[x, y].wall = true;
+                }
+                if (!isSurrounded)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), Middle);
+                }
+
+                if (upEmpty && !downEmpty && !leftEmpty && !rightEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), top);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && downEmpty && !leftEmpty && !rightEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), bottom);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && !downEmpty && leftEmpty && !rightEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), left);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && !downEmpty && !leftEmpty && rightEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), right);
+                    m_grid.cells[x, y].wall = true;
+                }
+                //// Conditions for diagonal tiles
+                else if (upEmpty && !downEmpty && rightEmpty && !leftEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), topRight);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && downEmpty && !rightEmpty && leftEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), bottomLeft);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (upEmpty && !downEmpty && !rightEmpty && leftEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), topLeft);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && downEmpty && rightEmpty && !leftEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), bottomRight);
+                    m_grid.cells[x, y].wall = true;
+                }
+
+                else if (upEmpty && downEmpty && !rightEmpty && leftEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottomLeft);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && downEmpty && rightEmpty && leftEmpty)
+                {
+                    Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 90), Vector3.one);
+                    tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
+                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottomLeft);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (upEmpty && downEmpty && rightEmpty && !leftEmpty)
+                {
+                    Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 180), Vector3.one);
+                    tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
+                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottomLeft);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (upEmpty && !downEmpty && rightEmpty && leftEmpty)
+                {
+                    Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 270), Vector3.one);
+                    tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
+                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottomLeft);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (upEmpty && downEmpty && !rightEmpty && !leftEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottom);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!upEmpty && !downEmpty && rightEmpty && leftEmpty)
+                {
+                    Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 90), Vector3.one);
+                    tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
+                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottom);
+                    m_grid.cells[x, y].wall = true;
+                }
+                else if (!rightEmpty && !upEmpty && !leftEmpty && !downEmpty)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), Middle); // Out of bounds
+                }
+                else
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), wall);
+                    m_grid.cells[x, y].wall = true;
+                }
+            }
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     void PlacePickup()
     {

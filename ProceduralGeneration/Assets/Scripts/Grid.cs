@@ -47,7 +47,12 @@ public class Grid
                 Cell down = (iY - 1 >= 0) ? cells[iX, iY - 1] : null;
                 Cell left = (iX - 1 >= 0) ? cells[iX - 1, iY] : null;
 
-                cells[iX, iY].SetNeighbours(up, right, down, left);
+                Cell upLeft = (iY + 1 < m_ySize && iX - 1 >= 0) ? cells[iX - 1, iY + 1] : null;
+                Cell upRight = iY + 1 < m_ySize && iX + 1 < m_xSize ? cells[iX + 1, iY + 1] : null;
+                Cell downRight = iY - 1 >= 0 && iX + 1 < m_xSize ? cells[iX + 1, iY - 1] : null;
+                Cell downLeft = iY - 1 >= 0 && iX - 1 >= 0 ? cells[iX - 1, iY - 1] : null;
+
+                cells[iX, iY].SetNeighbours(up, right, down, left, upLeft, upRight, downRight, downLeft);
             }
         }
     }
