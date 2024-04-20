@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Walker
 {
-    public Vector3Int position;
+    public Vector2 position;
     public Cell currentCell;
     private Vector2[] m_directions = { new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 0), new Vector2(-1, 0) };
     public int stepsTaken;
@@ -20,10 +20,9 @@ public class Walker
         maxSteps = _maxSteps;
     }
 
-    public float GetDistanceFrom(Vector3Int _from)
+    public float GetDistanceFrom(Vector2 _from)
     {
-        float dist = 0;
-        dist = Vector3Int.Distance(_from, position);
+        float dist = Vector2.Distance(_from, position);
         return dist;
     }
 
@@ -36,12 +35,10 @@ public class Walker
             return;
         }
 
-        Debug.Log(gridSizeY);
-
         Vector2 selectedDirection = m_directions[Random.Range(0, m_directions.Length)];
        
-        int x = 0;
-        int y = 0;
+        float x = 0;
+        float y = 0;
 
         if (currentCell.GetNeighbour(selectedDirection) != null )
         {

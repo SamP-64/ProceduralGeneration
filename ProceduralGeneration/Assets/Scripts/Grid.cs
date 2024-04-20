@@ -30,7 +30,7 @@ public class Grid
         {
             for (int iY = 0; iY < m_ySize; iY++)
             {
-                cells[iX, iY] = new Cell(new Vector3Int(iX, iY));
+                cells[iX, iY] = new Cell(new Vector2(iX, iY));
             }
         }
         return cells;

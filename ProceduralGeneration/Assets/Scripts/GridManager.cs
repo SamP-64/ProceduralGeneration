@@ -18,12 +18,15 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int m_walkerCount = 5;
     private List<Walker> m_walkers = new List<Walker>();
 
-    private Vector3Int origin;
+    private Vector2 origin;
     private Cell m_startCell;
+
 
     [SerializeField] Tilemap tilemap;
 
     public MovePlayer player;
+    int level;
+    public TextMeshProUGUI levelText;
 
     [SerializeField] Tile Middle;
     [SerializeField] Tile topLeft;
@@ -63,7 +66,8 @@ public class GridManager : MonoBehaviour
  
     public void Generate()
     {
-
+        level++;
+        levelText.text = "Level: " + level;
         string maxSteps = maxStepsInputField.text;
         int.TryParse(maxSteps, out maxStepCount);
 
@@ -78,7 +82,7 @@ public class GridManager : MonoBehaviour
         int.TryParse(y, out m_ySize); // Get Values From Input Fields
 
         m_grid = new Grid(m_xSize, m_ySize);
-        origin = new Vector3Int(Mathf.FloorToInt(m_xSize / 2), Mathf.FloorToInt(m_ySize / 2));
+        origin = RandomStartPoint();
 
         m_walkers = null;
         m_walkers = new List<Walker>();
@@ -87,9 +91,17 @@ public class GridManager : MonoBehaviour
         {
             m_walkers.Add(new Walker(m_grid.cells[(int)origin.x, (int)origin.y], maxStepCount));
         }
-        StartCoroutine(MoveTick());
+        //StartCoroutine(MoveTick());
+        MoveTick();
     }
-    public Vector3Int GetOrigin()
+    Vector2  RandomStartPoint()
+    {
+        int x = Random.Range(1, m_xSize - 1);
+        int y = Random.Range(1, m_ySize - 1);
+        origin = new Vector2(x, y);
+        return origin;
+    }
+    public Vector2 GetOrigin()
     {
         return origin;
     }
@@ -100,10 +112,10 @@ public class GridManager : MonoBehaviour
         // StartCoroutine(MoveTick());
         wall.colliderType = Tile.ColliderType.Grid;
     }
-    IEnumerator MoveTick()
+    void MoveTick()
     {
 
-        yield return new WaitForSeconds(0.001f);
+      //  yield return new WaitForSeconds(0.001f);
         int deadWalkers = 0;
         for (int i = 0; i < m_walkers.Count; i++)
         {
@@ -117,7 +129,8 @@ public class GridManager : MonoBehaviour
 
         if (deadWalkers < m_walkerCount)
         {
-            StartCoroutine(MoveTick());
+            //  StartCoroutine(MoveTick());
+            MoveTick();
         }
         else
         {
@@ -129,8 +142,6 @@ public class GridManager : MonoBehaviour
             player.StartPosition(origin);
             AddStartTile();
             AddEndTile();
-
-            Debug.Log("JK");
 
         }
 
@@ -159,7 +170,7 @@ public class GridManager : MonoBehaviour
 
         m_startCell = m_walkers[iLargest].currentCell;
         m_startCell.cellContent = startTile;
-        tilemap.SetTile(origin, startTile);
+        tilemap.SetTile(new Vector3Int(Mathf.RoundToInt(origin.x), Mathf.RoundToInt(origin.y), 0), startTile);
 
         //  var a = Instantiate(m_startCell.cellContent, m_startCell.position + (Vector2.one / 2), Quaternion.identity);
         //  a.transform.parent = m_tileObjectBin.transform;
@@ -169,10 +180,13 @@ public class GridManager : MonoBehaviour
     public GameObject stairsCollider;
     private void AddEndTile()
     {
+     
         List<float> walkerDistances = new List<float>();
         for (int i = 0; i < m_walkers.Count; i++)
         {
-            walkerDistances.Add(m_walkers[i].GetDistanceFrom(m_startCell.position));
+            
+            walkerDistances.Add(m_walkers[i].GetDistanceFrom(origin));
+            Debug.Log(m_walkers[i].position + " is " + walkerDistances[i] + " from " + origin);
         }
 
         int iLargest = 0;
@@ -187,12 +201,12 @@ public class GridManager : MonoBehaviour
         }
         Cell c = m_walkers[iLargest].currentCell;
         c.cellContent = endTile;
-        tilemap.SetTile(new Vector3Int(c.position.x, c.position.y, c.position.z), endTile);
-        stairsCollider.transform.position = new Vector3(c.position.x + 0.5f , c.position.y + 0.5f, c.position.z);
+        tilemap.SetTile(new Vector3Int(Mathf.RoundToInt(c.position.x), Mathf.RoundToInt(c.position.y), 0), endTile);
+        stairsCollider.transform.position = new Vector2(c.position.x + 0.5f , c.position.y + 0.5f);
 
-
-        //  var a = Instantiate(m_walkers[iLargest].currentCell.cellContent, c.position + (Vector2.one / 2), Quaternion.identity);
-        //  a.transform.parent = m_tileObjectBin.transform;
+      //  Vector2 vector = new Vector2 (c.position.x, c.position.y );
+      //  var a = Instantiate(m_walkers[iLargest].currentCell.cellContent, vector + (Vector2.one / 2), Quaternion.identity);
+      //  a.transform.parent = m_tileObjectBin.transform;
 
     }
     public void CreateRooms()

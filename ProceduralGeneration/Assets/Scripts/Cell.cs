@@ -8,7 +8,7 @@ namespace GridSystem
     public class Cell
     {
         #region Variables
-        public Vector3Int position;
+        public Vector2 position;
         private Dictionary<Vector2, Cell> m_neighbours = new Dictionary<Vector2, Cell>()
         {
             {Vector2.up, null},
@@ -22,7 +22,7 @@ namespace GridSystem
         public Room room;
         #endregion
 
-        public Cell(Vector3Int _pos)
+        public Cell(Vector2 _pos)
         {
             position = _pos;
            // m_cellContent = "Empty";

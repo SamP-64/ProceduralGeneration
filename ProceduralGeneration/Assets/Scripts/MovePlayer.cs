@@ -9,9 +9,9 @@ public class MovePlayer : MonoBehaviour
     public float moveSpeed = 5f;
     public Tilemap tilemap; // Tilemap reference
 
-    public void StartPosition(Vector3Int startPos)
+    public void StartPosition(Vector2 startPos)
     {
-        transform.position = new Vector3(startPos.x,  startPos.y, 0);
+        transform.position = new Vector2(startPos.x,  startPos.y);
     }
 
     public GridManager gridManager;
