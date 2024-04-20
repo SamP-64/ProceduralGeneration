@@ -30,6 +30,7 @@ public class GridManager : MonoBehaviour
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI coinText;
 
+    public Transform enemy;
 
     [SerializeField] Tile Middle;
     [SerializeField] Tile topLeft;
@@ -150,7 +151,7 @@ public class GridManager : MonoBehaviour
             PlacePickup();
             AddStartTile();
             AddEndTile();
-
+          
         }
 
 
@@ -213,9 +214,10 @@ public class GridManager : MonoBehaviour
         tilemap.SetTile(new Vector3Int(Mathf.RoundToInt(c.position.x), Mathf.RoundToInt(c.position.y), 0), endTile);
         stairsCollider.transform.position = new Vector2(c.position.x + 0.5f , c.position.y + 0.5f);
 
-      //  Vector2 vector = new Vector2 (c.position.x, c.position.y );
-      //  var a = Instantiate(m_walkers[iLargest].currentCell.cellContent, vector + (Vector2.one / 2), Quaternion.identity);
-      //  a.transform.parent = m_tileObjectBin.transform;
+        enemy.transform.position = stairsCollider.transform.position;
+        //  Vector2 vector = new Vector2 (c.position.x, c.position.y );
+        //  var a = Instantiate(m_walkers[iLargest].currentCell.cellContent, vector + (Vector2.one / 2), Quaternion.identity);
+        //  a.transform.parent = m_tileObjectBin.transform;
 
     }
     public void CreateRooms()
