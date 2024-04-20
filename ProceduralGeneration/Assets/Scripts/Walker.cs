@@ -40,19 +40,26 @@ public class Walker
         float x = 0;
         float y = 0;
 
-        if (currentCell.GetNeighbour(selectedDirection) != null )
+        
+
+        if (currentCell != null )
         {
-            x = currentCell.GetNeighbour(selectedDirection).position.x;
-            y = currentCell.GetNeighbour(selectedDirection).position.y; // Values to stop walkers moving to the edge of the grid
+            Cell neighbour = currentCell.GetRandomWeightedNeighbour();
+            x = neighbour.position.x;
+            y = neighbour.position.y; // Values to stop walkers moving to the edge of the grid
+
+            if (neighbour != null && x != 0 && y != 0 && y != gridSizeY - 1 && x != gridSizeX - 1)
+            {
+                currentCell = neighbour;
+                currentCell.cellDebugColour = Color.black;
+                currentCell.traversed = true;
+                position = currentCell.position;
+                currentCell.UpdateNeighbourHeat();
+            }
+
         }
    
-        if (currentCell.GetNeighbour(selectedDirection) != null && x != 0 && y != 0 && y != gridSizeY - 1 && x != gridSizeX - 1)
-        {
-            currentCell = currentCell.GetNeighbour(selectedDirection);
-            currentCell.cellDebugColour = Color.black;
-            currentCell.traversed = true;
-            position = currentCell.position;
-        }
+     
         stepsTaken++;
     }
 
