@@ -12,15 +12,15 @@ public class Walker
     int maxSteps;
     public bool dead;
     public GridManager gridManager;
-
-    public Walker(Cell _cell, int _maxSteps)
+    
+    public Walker(Cell _cell, int _maxSteps) // Walker Constructor
     {
         currentCell = _cell;
         position = _cell.position;
         maxSteps = _maxSteps;
     }
 
-    public float GetDistanceFrom(Vector2 _from)
+    public float GetDistanceFrom(Vector2 _from) // Returns walker distance from certain point
     {
         float dist = Vector2.Distance(_from, position);
         return dist;
@@ -37,8 +37,6 @@ public class Walker
        
         float x = 0;
         float y = 0;
-
-        
 
         if (currentCell != null )
         {
@@ -59,7 +57,4 @@ public class Walker
    
         stepsTaken++;
     }
-
-    
- 
 }

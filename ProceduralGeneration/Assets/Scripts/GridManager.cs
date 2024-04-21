@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 using TMPro;
 using static UnityEngine.Tilemaps.Tile;
@@ -58,6 +59,15 @@ public class GridManager : MonoBehaviour
     public TMP_InputField ySizeInputField;
     public TMP_InputField walkersInputField;
     public TMP_InputField maxStepsInputField;
+  
+    [SerializeField] private Slider xRoomSlider;
+    [SerializeField] private Slider yRoomSlider;
+
+    [SerializeField] private TextMeshProUGUI xRoomSizeText;
+    [SerializeField] private TextMeshProUGUI yRoomSizeText;
+
+    private int roomSizeX;
+    private int roomSizeY;
     #endregion
 
     #region Private Functions
@@ -65,6 +75,25 @@ public class GridManager : MonoBehaviour
     //OnEnable()
 
     public GameObject panel;
+
+    public void Start()
+    {
+        player = player.GetComponent<MovePlayer>();
+        wall.colliderType = Tile.ColliderType.Grid;
+
+        xRoomSlider.onValueChanged.AddListener((v) =>
+        {
+            xRoomSizeText.text = v.ToString("0");
+            int.TryParse(xRoomSizeText.text, out roomSizeX);
+        });
+        yRoomSlider.onValueChanged.AddListener((v) =>
+        {
+            yRoomSizeText.text = v.ToString("0");
+            int.TryParse(yRoomSizeText.text, out roomSizeY);
+        });
+
+    }
+
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -120,12 +149,6 @@ public class GridManager : MonoBehaviour
         return origin;
     }
 
-    public void Start()
-    {
-        player = player.GetComponent<MovePlayer>();
-        // StartCoroutine(MoveTick());
-        wall.colliderType = Tile.ColliderType.Grid;
-    }
     void MoveTick()
     {
 
@@ -173,7 +196,7 @@ public class GridManager : MonoBehaviour
     {
         foreach (Walker walker in m_walkers)
         {
-            CreateRoom((int)walker.position.x, (int)walker.position.y, 6);
+            CreateRoom((int)walker.position.x, (int)walker.position.y);
         }
     }
 
@@ -604,29 +627,6 @@ public class GridManager : MonoBehaviour
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     void PlacePickup()
     {
 
@@ -685,32 +685,32 @@ public class GridManager : MonoBehaviour
 
     }
 
-    bool CanCreate(ref int xStart, ref int yStart, int size)
+    bool CanCreate(ref int xStart, ref int yStart)
     {
 
         Debug.Log(m_xSize);
 
-        if (xStart > (m_xSize - size))
+        if (xStart > (m_xSize - roomSizeX))
         {
-            xStart = m_xSize - size - 5;
+            xStart = m_xSize - roomSizeX - 5;
         }
 
         if (xStart < 2)
         {
             xStart = 2;
         }
-        if (yStart > (m_ySize - size))
+        if (yStart > (m_ySize - roomSizeY))
         {
-            yStart = m_ySize - size - 5;
+            yStart = m_ySize - roomSizeY - 5;
         }
         if (yStart < 2)
         {
             yStart = 2;
         }
 
-        for (int x = xStart; x < xStart + size; x++)
+        for (int x = xStart; x < xStart + roomSizeX; x++)
         {
-            for (int y = yStart; y < yStart + size; y++)
+            for (int y = yStart; y < yStart + roomSizeY; y++)
             {
 
                 if ((m_grid.cells[x, y] == null || m_grid.cells[x, y].room == true))
@@ -723,16 +723,16 @@ public class GridManager : MonoBehaviour
         return true;
     }
 
-    public void CreateRoom(int xStart, int yStart, int size)
+    public void CreateRoom(int xStart, int yStart)
     {
 
-        bool canCreate = CanCreate(ref xStart, ref yStart, size);
+        bool canCreate = CanCreate(ref xStart, ref yStart);
 
 
         if (canCreate)
         {
             Debug.Log("Creating Room at " + xStart + " " + yStart);
-            GenerateRandomRoom(xStart, yStart, size);
+            GenerateRandomRoom(xStart, yStart);
 
         }
         else
@@ -741,7 +741,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    void GenerateRandomRoom(int xStart, int yStart, int size)
+    void GenerateRandomRoom(int xStart, int yStart)
     {
 
         int random = Random.Range(1, 3);
@@ -749,10 +749,10 @@ public class GridManager : MonoBehaviour
         switch (random)
         {
             case 1:
-                GenerateCoinRoom(xStart, yStart, size);
+                GenerateCoinRoom(xStart, yStart);
                 break;
             case 2:
-                GenerateEnemyRoom(xStart, yStart, size);
+                GenerateEnemyRoom(xStart, yStart);
                 break;
             case 3:
             case 4:
@@ -763,13 +763,13 @@ public class GridManager : MonoBehaviour
         }
 
     }
-    void GenerateCoinRoom(int xStart, int yStart, int size)
+    void GenerateCoinRoom(int xStart, int yStart)
     {
 
         Debug.Log("Generating Coin Room");
-        for (int x = xStart; x < xStart + size ; x++)
+        for (int x = xStart; x < xStart + roomSizeX ; x++)
         {
-            for (int y = yStart; y < yStart + size ; y++)
+            for (int y = yStart; y < yStart + roomSizeY ; y++)
             {
                 //  Debug.Log(x + " " + y);
 
@@ -793,19 +793,16 @@ public class GridManager : MonoBehaviour
     public GameObject enemyPrefab;
     public EnemyManager enemyManager;
 
-
-    
-
-    void GenerateEnemyRoom(int xStart, int yStart, int size)
+    void GenerateEnemyRoom(int xStart, int yStart)
     {
 
-        int middleX = xStart + size / 2;
-        int middleY = yStart + size / 2;
+        int middleX = xStart + roomSizeX / 2;
+        int middleY = yStart + roomSizeY / 2;
 
         Debug.Log("Generating Enemy Room");
-        for (int x = xStart; x < xStart + size; x++)
+        for (int x = xStart; x < xStart + roomSizeX; x++)
         {
-            for (int y = yStart; y < yStart + size ; y++)
+            for (int y = yStart; y < yStart + roomSizeY ; y++)
             {
                 Vector3 spawnPosition =  new Vector2(x, y);
 

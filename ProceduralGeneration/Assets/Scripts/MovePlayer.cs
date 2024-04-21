@@ -8,22 +8,17 @@ public class MovePlayer : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public Tilemap tilemap; // Tilemap reference
-
-    public void StartPosition(Vector2 startPos)
-    {
-        transform.position = new Vector2(startPos.x,  startPos.y);
-    }
-
     public GridManager gridManager;
+
     private void Start()
     {
         gridManager = gridManager.GetComponent<GridManager>();
     }
+  
     private void Update()
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
-
 
         Vector3 movement = transform.up * verticalInput * moveSpeed * Time.deltaTime; // Calculate movement direction based on player's local forward direction
         movement += transform.right * horizontalInput * moveSpeed * Time.deltaTime; // Add horizontal movement
@@ -41,52 +36,16 @@ public class MovePlayer : MonoBehaviour
         gridManager.CheckPickup(playerTilePosition);
     }
 
-    //void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    Collision detection
-    //    Debug.Log("Collision detected with: " + collision.transform);
-
-    //    Vector3Int cellPosition = tilemap.WorldToCell(collision.transform.position);
-
-    //    Debug.Log(tilemap.GetTile(cellPosition).name);
-    //    if (tilemap.GetTile(cellPosition).name == "Stairs")
-    //    {
-    //        Debug.Log("Collision detected with stairs ");
-    //    }
-    //}
-
-
-
-    //void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    Vector3 hitPosition = collision.GetContact(0).point;
-    //    Vector3Int cellPosition = tilemap.WorldToCell(hitPosition);
-    //    TileBase tile = tilemap.GetTile(cellPosition);
-
-    //    if (tile != null)
-    //    {
-    //        Debug.Log("Collided with tile: " + tile.name);
-    //    }
-    //    Debug.Log(collision.gameObject.name);
-    //    if ( collision.gameObject.name == "StairsCollider")
-    //    {
-    //        Debug.Log("Next");
-    //        gridManager.Generate();
-    //    }
-    //}
-
-
+    public void StartPosition(Vector2 startPos)
+    {
+        transform.position = new Vector2(startPos.x, startPos.y);
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-       
-        
         if (collision.gameObject.name == "StairsCollider")
         {
-            gridManager.Generate();
+            gridManager.Generate(); // Move to next floor
         }
-
-    //    gridManager.CheckPickup(collision);
-
     }
 }
