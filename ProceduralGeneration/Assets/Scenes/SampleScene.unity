@@ -395,22 +395,7 @@ MonoBehaviour:
   levelText: {fileID: 1299493309}
   coinText: {fileID: 1128858203}
   enemy: {fileID: 1611874851}
-  Middle: {fileID: 11400000, guid: 6315362a529c26444b9db807eb04d0fc, type: 2}
-  topLeft: {fileID: 11400000, guid: fb3a08c88991acf418bb3897ac3c1867, type: 2}
-  topRight: {fileID: 11400000, guid: 7dcf2cacedb61424d8de9cbfb2aa342d, type: 2}
-  bottomLeft: {fileID: 11400000, guid: 221e67a55e26a504ea27d976c3522957, type: 2}
-  bottomRight: {fileID: 11400000, guid: 619af8f62ee46d041a8c1badd7c51e31, type: 2}
-  left: {fileID: 11400000, guid: 33e8aca321dd71540a2803574e947763, type: 2}
-  right: {fileID: 11400000, guid: 361ad4f93e0b6974aa340f4ea949da09, type: 2}
-  top: {fileID: 11400000, guid: 83eb8d0090d70424280d87c6cca3523d, type: 2}
-  bottom: {fileID: 11400000, guid: 7baec31a2fedc91489f26a5c7fe6865c, type: 2}
-  topBottom: {fileID: 11400000, guid: 37cbf71a5c242384a866d35cd62aac6d, type: 2}
-  topBottomLeft: {fileID: 11400000, guid: 59c421aee1133084daa1551e2433695a, type: 2}
-  startTile: {fileID: 11400000, guid: da97d309e3f789b4a83fc796a67aa2a5, type: 2}
-  endTile: {fileID: 11400000, guid: 711bd1537ef324b48a1018519a8d02ce, type: 2}
-  wall: {fileID: 11400000, guid: 1ab8022cbc8a3da42a50d169aa897758, type: 2}
   empty: {fileID: 11400000, guid: 8bbc46ca98ff1674daeaabfd510a9d8c, type: 2}
-  pickup: {fileID: 11400000, guid: 4304c1a024c53284ba7fe16efb052f44, type: 2}
   xSizeInputField: {fileID: 767075612}
   ySizeInputField: {fileID: 1521669134}
   walkersInputField: {fileID: 2068184644}
@@ -466,6 +451,48 @@ MonoBehaviour:
   - Name: Coin
     tile: {fileID: 11400000, guid: 4304c1a024c53284ba7fe16efb052f44, type: 2}
     ColliderType: 0
+  - Name: Up
+    tile: {fileID: 11400000, guid: 83eb8d0090d70424280d87c6cca3523d, type: 2}
+    ColliderType: 2
+  - Name: Down
+    tile: {fileID: 11400000, guid: 7baec31a2fedc91489f26a5c7fe6865c, type: 2}
+    ColliderType: 2
+  - Name: Left
+    tile: {fileID: 11400000, guid: 33e8aca321dd71540a2803574e947763, type: 2}
+    ColliderType: 2
+  - Name: Right
+    tile: {fileID: 11400000, guid: 361ad4f93e0b6974aa340f4ea949da09, type: 2}
+    ColliderType: 2
+  - Name: UpRight
+    tile: {fileID: 11400000, guid: 7dcf2cacedb61424d8de9cbfb2aa342d, type: 2}
+    ColliderType: 2
+  - Name: UpLeft
+    tile: {fileID: 11400000, guid: fb3a08c88991acf418bb3897ac3c1867, type: 2}
+    ColliderType: 2
+  - Name: DownRight
+    tile: {fileID: 11400000, guid: 619af8f62ee46d041a8c1badd7c51e31, type: 2}
+    ColliderType: 2
+  - Name: DownLeft
+    tile: {fileID: 11400000, guid: 221e67a55e26a504ea27d976c3522957, type: 2}
+    ColliderType: 2
+  - Name: Middle
+    tile: {fileID: 11400000, guid: 6315362a529c26444b9db807eb04d0fc, type: 2}
+    ColliderType: 0
+  - Name: StartStairs
+    tile: {fileID: 11400000, guid: da97d309e3f789b4a83fc796a67aa2a5, type: 2}
+    ColliderType: 0
+  - Name: EndStairs
+    tile: {fileID: 11400000, guid: 711bd1537ef324b48a1018519a8d02ce, type: 2}
+    ColliderType: 0
+  - Name: UpDown
+    tile: {fileID: 11400000, guid: 37cbf71a5c242384a866d35cd62aac6d, type: 2}
+    ColliderType: 2
+  - Name: UpDownLeft
+    tile: {fileID: 11400000, guid: 59c421aee1133084daa1551e2433695a, type: 2}
+    ColliderType: 2
+  - Name: Wall
+    tile: {fileID: 11400000, guid: 1ab8022cbc8a3da42a50d169aa897758, type: 2}
+    ColliderType: 2
   m_tileMap: {fileID: 1248534078}
 --- !u!1 &330585543
 GameObject:

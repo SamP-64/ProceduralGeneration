@@ -33,27 +33,7 @@ public class GridManager : MonoBehaviour
 
     public Transform enemy;
 
-    [SerializeField] Tile Middle;
-    [SerializeField] Tile topLeft;
-    [SerializeField] Tile topRight;
-    [SerializeField] Tile bottomLeft;
-    [SerializeField] Tile bottomRight;
-
-    [SerializeField] Tile left;
-    [SerializeField] Tile right;
-    [SerializeField] Tile top;
-    [SerializeField] Tile bottom;
-
-    [SerializeField] Tile topBottom;
-    [SerializeField] Tile topBottomLeft;
-
-    [SerializeField] Tile startTile;
-    [SerializeField] Tile endTile;
-
-    [SerializeField] Tile wall;
     [SerializeField] Tile empty;
-
-    [SerializeField] Tile pickup;
 
     [SerializeField] private  TMP_InputField xSizeInputField;
     [SerializeField] private TMP_InputField ySizeInputField;
@@ -79,7 +59,6 @@ public class GridManager : MonoBehaviour
     public void Start()
     {
         player = player.GetComponent<MovePlayer>();
-        wall.colliderType = Tile.ColliderType.Grid;
 
         xRoomSlider.onValueChanged.AddListener((v) =>
         {
@@ -220,11 +199,7 @@ public class GridManager : MonoBehaviour
         }
 
         m_startCell = m_walkers[iLargest].currentCell;
-        m_startCell.cellContent = startTile;
-        tilemap.SetTile(new Vector3Int(Mathf.RoundToInt(origin.x), Mathf.RoundToInt(origin.y), 0), startTile);
-
-        //  var a = Instantiate(m_startCell.cellContent, m_startCell.position + (Vector2.one / 2), Quaternion.identity);
-        //  a.transform.parent = m_tileObjectBin.transform;
+        SpawnTile(Mathf.RoundToInt(origin.x), Mathf.RoundToInt(origin.y), "StartStairs");
 
     }
 
@@ -251,14 +226,11 @@ public class GridManager : MonoBehaviour
             }
         }
         Cell c = m_walkers[iLargest].currentCell;
-        c.cellContent = endTile;
-        tilemap.SetTile(new Vector3Int(Mathf.RoundToInt(c.position.x), Mathf.RoundToInt(c.position.y), 0), endTile);
+        SpawnTile(Mathf.RoundToInt(c.position.x), Mathf.RoundToInt(c.position.y), "StartStairs");
+
         stairsCollider.transform.position = new Vector2(c.position.x + 0.5f, c.position.y + 0.5f);
 
         enemy.transform.position = stairsCollider.transform.position;
-        //  Vector2 vector = new Vector2 (c.position.x, c.position.y );
-        //  var a = Instantiate(m_walkers[iLargest].currentCell.cellContent, vector + (Vector2.one / 2), Quaternion.identity);
-        //  a.transform.parent = m_tileObjectBin.transform;
 
     }
 
@@ -285,7 +257,7 @@ public class GridManager : MonoBehaviour
                 }
                 else
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), Middle);
+                    SpawnTile(x, y, "Middle");
                 }
 
             }
@@ -293,157 +265,6 @@ public class GridManager : MonoBehaviour
 
 
     }
-
-    void CheckForWallsOld()
-    {
-
-
-        for (int x = 0; x < m_xSize; x++)
-        {
-            for (int y = 0; y < m_ySize; y++)
-            {
-
-                if (m_grid.cells[x, y].traversed == true) { continue; }
-
-
-                bool isSurrounded = true;
-                bool leftEmpty = true;
-                bool rightEmpty = true;
-                bool upEmpty = true;
-                bool downEmpty = true;
-
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.up) != null)
-                {
-
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.up).traversed == false)
-                    {
-                        isSurrounded = false;
-                        upEmpty = false;
-                    }
-                }
-                else
-                {
-
-                    isSurrounded = false;
-                    upEmpty = false;
-                }
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.down) != null)
-                {
-
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.down).traversed == false)
-                    {
-                        isSurrounded = false;
-                        downEmpty = false;
-                    }
-                }
-                else
-                {
-                    isSurrounded = false;
-                    downEmpty = false;
-                }
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.left) != null)
-                {
-
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.left).traversed == false)
-                    {
-                        isSurrounded = false;
-                        leftEmpty = false;
-                    }
-                }
-                else
-                {
-                    isSurrounded = false;
-                    leftEmpty = false;
-                }
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.right) != null)
-                {
-
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.right).traversed == false)
-                    {
-                        isSurrounded = false;
-                        rightEmpty = false;
-                    }
-                }
-                else
-                {
-                    isSurrounded = false;
-                    rightEmpty = false;
-                }
-
-
-
-                if (isSurrounded == false)
-                {
-                    wall.colliderType = Tile.ColliderType.Grid;
-                    tilemap.SetTile(new Vector3Int(x, y, 0), wall);
-                    m_grid.cells[x, y].wall = true;
-                }
-
-                if (upEmpty && !downEmpty && !leftEmpty && !rightEmpty)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), top);
-                    m_grid.cells[x, y].wall = true;
-                }
-                else if (!upEmpty && downEmpty && !leftEmpty && !rightEmpty)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), bottom);
-                    m_grid.cells[x, y].wall = true;
-                }
-                else if (!upEmpty && !downEmpty && leftEmpty && !rightEmpty)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), left);
-                    m_grid.cells[x, y].wall = true;
-                }
-                else if (!upEmpty && !downEmpty && !leftEmpty && rightEmpty)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), right);
-                    m_grid.cells[x, y].wall = true;
-                }
-                //else if (!upEmpty && downEmpty && !leftEmpty && rightEmpty)
-                //{
-                //    tilemap.SetTile(new Vector3Int(x, y, 0), bottomRight);
-                //}
-                //else if (upEmpty && !downEmpty && leftEmpty && !rightEmpty)
-                //{
-                //    tilemap.SetTile(new Vector3Int(x, y, 0), topLeft);
-                //}
-                //else if (!upEmpty && downEmpty && leftEmpty && !rightEmpty)
-                //{
-                //    tilemap.SetTile(new Vector3Int(x, y, 0), bottomLeft);
-                //}
-                //else if (upEmpty && !downEmpty && !leftEmpty && rightEmpty)
-                //{
-                //    tilemap.SetTile(new Vector3Int(x, y, 0), topRight);
-                //}
-                //else if (upEmpty && downEmpty && !leftEmpty && !rightEmpty)
-                //{
-                //    tilemap.SetTile(new Vector3Int(x, y, 0), topBottom);
-                //}
-                //else if (!upEmpty && !downEmpty && leftEmpty && rightEmpty)
-                //{
-
-                //    Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 90f), Vector3.one); // Rotate by 90 degrees
-                //    tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
-
-                //    tilemap.SetTile(new Vector3Int(x, y, 0), topBottom);
-
-                //}
-
-
-
-                if (!rightEmpty && !upEmpty && !leftEmpty && !downEmpty)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), empty);
-                }
-
-            }
-        }
-
-
-
-
-    }
-
     void CheckForWalls()
     {
         for (int x = 0; x < m_xSize; x++)
@@ -453,7 +274,7 @@ public class GridManager : MonoBehaviour
 
                 if (m_grid.cells[x, y].room) continue;
 
-                tilemap.SetTile(new Vector3Int(x, y, 0), Middle);
+                SpawnTile(x, y, "Middle");
 
                 if (m_grid.cells[x, y].traversed) continue;
 
@@ -528,98 +349,97 @@ public class GridManager : MonoBehaviour
 
                 if (!isSurrounded)
                 {
-                    wall.colliderType = Tile.ColliderType.Grid;
-                    tilemap.SetTile(new Vector3Int(x, y, 0), wall);
+                    SpawnTile(x, y, "Wall");
                     m_grid.cells[x, y].wall = true;
                 }
 
                 if (upEmpty && !downEmpty && !leftEmpty && !rightEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), top);
+                    SpawnTile(x, y, "Up");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (!upEmpty && downEmpty && !leftEmpty && !rightEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), bottom);
+                    SpawnTile(x, y, "Down");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (!upEmpty && !downEmpty && leftEmpty && !rightEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), left);
+                    SpawnTile(x, y, "Left");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (!upEmpty && !downEmpty && !leftEmpty && rightEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), right);
+                    SpawnTile(x, y, "Right");
                     m_grid.cells[x, y].wall = true;
                 }
                 //// Conditions for diagonal tiles
                 else if (upEmpty && !downEmpty && rightEmpty && !leftEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), topRight);
+                    SpawnTile(x, y, "UpRight");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (!upEmpty && downEmpty && !rightEmpty && leftEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), bottomLeft);
+                    SpawnTile(x, y, "DownLeft");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (upEmpty && !downEmpty && !rightEmpty && leftEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), topLeft);
+                    SpawnTile(x, y, "UpLeft");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (!upEmpty && downEmpty && rightEmpty && !leftEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), bottomRight);
+                    SpawnTile(x, y, "DownRight");
                     m_grid.cells[x, y].wall = true;
                 }
 
                 else if (upEmpty && downEmpty && !rightEmpty && leftEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottomLeft);
+                    SpawnTile(x, y, "UpDownLeft");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (!upEmpty && downEmpty && rightEmpty && leftEmpty)
                 {
                     Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 90), Vector3.one);
                     tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
-                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottomLeft);
+                    SpawnTile(x, y, "UpDownLeft");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (upEmpty && downEmpty && rightEmpty && !leftEmpty)
                 {
                     Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 180), Vector3.one);
                     tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
-                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottomLeft);
+                    SpawnTile(x, y, "UpDownLeft");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (upEmpty && !downEmpty && rightEmpty && leftEmpty)
                 {
                     Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 270), Vector3.one);
                     tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
-                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottomLeft);
+                    SpawnTile(x, y, "UpDownLeft");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (upEmpty && downEmpty && !rightEmpty && !leftEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottom);
+                    SpawnTile(x, y, "UpDown");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (!upEmpty && !downEmpty && rightEmpty && leftEmpty)
                 {
                     Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 90), Vector3.one);
                     tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
-                    tilemap.SetTile(new Vector3Int(x, y, 0), topBottom);
+                    SpawnTile(x, y, "UpDown");
                     m_grid.cells[x, y].wall = true;
                 }
                 else if (!rightEmpty && !upEmpty && !leftEmpty && !downEmpty)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), Middle); // Out of bounds
+                    SpawnTile(x, y, "Middle"); // Out of bounds
                 }
                 else
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), wall);
+                    SpawnTile(x, y, "Wall");
                     m_grid.cells[x, y].wall = true;
                 }
             }
@@ -641,7 +461,7 @@ public class GridManager : MonoBehaviour
                     if (Random.Range(0, (m_xSize * m_ySize) / 7) == 0)
                     {
 
-                        tilemap.SetTile(new Vector3Int(x, y, 0), pickup);
+                        SpawnTile(x, y, "Coin");
                     }
 
                 }
@@ -654,9 +474,9 @@ public class GridManager : MonoBehaviour
 
         TileBase collidedTile = tilemap.GetTile(position);    // Get the tile at the collided position
 
-        if (collidedTile == pickup)
+        if (collidedTile == TileMapManager.Inst.GetTile("Coin"))
         {
-            tilemap.SetTile(position, Middle);   // Replace the coin tile with the floor tile
+            SpawnTile(position.x, position.y, "Middle");   // Replace the coin tile with the floor tile
             coins++;
             coinText.text = "Coins: " + coins;
         }
@@ -690,7 +510,7 @@ public class GridManager : MonoBehaviour
 
         Debug.Log(m_xSize);
 
-        if (xStart > (m_xSize - roomSizeX))
+        if (xStart >= (m_xSize - roomSizeX))
         {
             xStart = m_xSize - roomSizeX - 5;
         }
@@ -699,7 +519,7 @@ public class GridManager : MonoBehaviour
         {
             xStart = 2;
         }
-        if (yStart > (m_ySize - roomSizeY))
+        if (yStart >= (m_ySize - roomSizeY))
         {
             yStart = m_ySize - roomSizeY - 5;
         }
@@ -776,13 +596,11 @@ public class GridManager : MonoBehaviour
                 int random = Random.Range(1, 3);
                 if (random == 1)
                 {
-                    //  tilemap.SetTile(new Vector3Int(x, y, 0), pickup);
-                    Tile tile =  TileMapManager.Inst.GetTile("Coin");
-                    tilemap.SetTile(new Vector3Int(x, y, 0), tile);
+                    SpawnTile(x, y, "Coin");
                 }
                 else
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), Middle);
+                    SpawnTile(x, y, "Middle");
                 }
                 m_grid.cells[x, y].traversed = true;
                 m_grid.cells[x, y].room = true;
@@ -814,7 +632,7 @@ public class GridManager : MonoBehaviour
                     GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
                 }
 
-                tilemap.SetTile(new Vector3Int(x, y, 0), Middle);
+                SpawnTile(x, y, "Middle");
                 m_grid.cells[x, y].traversed = true;
                 m_grid.cells[x, y].room = true;
 
@@ -824,4 +642,11 @@ public class GridManager : MonoBehaviour
         #endregion
     }
 
+    void SpawnTile(int x, int y, string name)
+    {
+        
+        Tile tile = TileMapManager.Inst.GetTile(name);
+        tilemap.SetTile(new Vector3Int(x, y, 0), tile);
+
+    }
 }

@@ -1,4 +1,4 @@
- using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -11,6 +11,7 @@ public class AiMovement : MonoBehaviour
     private List<Vector3Int> path;
     private Vector3Int lastPlayerCell;
     [SerializeField] float updatePathInterval = 0.1f; // Update path every 1 second
+    [SerializeField] float searchRange = 20f;
     private float lastUpdateTime;
 
     private void Start()
@@ -36,16 +37,27 @@ public class AiMovement : MonoBehaviour
 
     private void FindPlayer()
     {
-        Vector3Int playerCell = tilemap.WorldToCell(player.position);
-        if (playerCell != lastPlayerCell)
-        {
-            Vector3Int startCell = tilemap.WorldToCell(transform.position);
-            Vector3Int goalCell = playerCell;
+       
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);  // Distance between the AI and the player
 
-            path = AStar.FindPath(startCell, goalCell, tilemap);
-            lastPlayerCell = playerCell;
+        if (distanceToPlayer <= searchRange)  // Check if the player is within the search range
+        {
+            Vector3Int playerCell = tilemap.WorldToCell(player.position);
+            if (playerCell != lastPlayerCell)
+            {
+                Vector3Int startCell = tilemap.WorldToCell(transform.position);
+                Vector3Int goalCell = playerCell;
+
+                path = AStar.FindPath(startCell, goalCell, tilemap);
+                lastPlayerCell = playerCell;
+            }
+        }
+        else
+        {
+            path = null;
         }
     }
+
 
     private void MoveAlongPath()
     {

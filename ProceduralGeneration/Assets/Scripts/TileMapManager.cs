@@ -45,7 +45,6 @@ public class TileMapManager : MonoBehaviour
 
         return newTile.tile;
 
-
     }
 
 }

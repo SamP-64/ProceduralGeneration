@@ -16,7 +16,7 @@ namespace GridSystem
             {Vector2.down, null},
             {Vector2.left, null}
         };
-        public Tile cellContent;
+
         public Color cellDebugColour;
         public bool traversed = false;
         public bool room = false;
@@ -33,10 +33,7 @@ namespace GridSystem
 
 
         #region Public Functions
-        public Tile GetCellContent()
-        {
-            return cellContent;
-        }
+      
         public Cell GetNeighbour(Vector2 Direction)
         {
             return m_neighbours[Direction];
@@ -50,20 +47,6 @@ namespace GridSystem
             m_neighbours[Vector2.left] = _left;
         }
 
-        public void DebugCell()
-        {
-            Debug.Log("Neighbours:\n"
-                        + "-Up " + m_neighbours[Vector2.up] + "\n"
-                        + "-Right " + m_neighbours[Vector2.right] + "\n"
-                        + "-Down " + m_neighbours[Vector2.down] + "\n"
-                        + "-Left " + m_neighbours[Vector2.left] + "\n"
-                    + "Position:"
-                        + position + "\n"
-                    + "Content:"
-                        + cellContent
-                    + "\n "
-                    );
-        }
         #endregion Private Functions
 
         public Cell GetRandomWeightedNeighbour()
