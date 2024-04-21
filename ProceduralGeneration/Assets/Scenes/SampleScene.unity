@@ -364,6 +364,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 263412381}
+  - component: {fileID: 263412383}
   - component: {fileID: 263412380}
   - component: {fileID: 263412382}
   m_Layer: 0
@@ -449,6 +450,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf70701ba6bfad49ae53bc4342d079a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &263412383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263412379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b77731bc7b5d98844a3276be41f5fdc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllTiles:
+  - Name: Coin
+    tile: {fileID: 11400000, guid: 4304c1a024c53284ba7fe16efb052f44, type: 2}
+    ColliderType: 0
+  m_tileMap: {fileID: 1248534078}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
