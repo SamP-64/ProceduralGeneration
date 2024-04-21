@@ -474,7 +474,7 @@ public class GridManager : MonoBehaviour
 
         TileBase collidedTile = tilemap.GetTile(position);    // Get the tile at the collided position
 
-        if (collidedTile == TileMapManager.Inst.GetTile("Coin"))
+        if (collidedTile != null && collidedTile == TileMapManager.Inst.GetTile("Coin"))
         {
             SpawnTile(position.x, position.y, "Middle");   // Replace the coin tile with the floor tile
             coins++;

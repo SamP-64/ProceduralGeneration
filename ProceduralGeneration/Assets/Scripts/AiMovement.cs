@@ -5,13 +5,13 @@ using UnityEngine.Tilemaps;
 public class AiMovement : MonoBehaviour
 {
     public float moveSpeed = 2f;
-    public Transform player;
-    public Tilemap tilemap;
+    [SerializeField] private Transform player;
+    [SerializeField] private Tilemap tilemap;
 
     private List<Vector3Int> path;
     private Vector3Int lastPlayerCell;
-    [SerializeField] float updatePathInterval = 0.1f; // Update path every 1 second
-    [SerializeField] float searchRange = 20f;
+    [SerializeField] private float updatePathInterval = 0.1f; // Update path every 1 second
+    [SerializeField] private float searchRange = 20f;
     private float lastUpdateTime;
 
     private void Start()
