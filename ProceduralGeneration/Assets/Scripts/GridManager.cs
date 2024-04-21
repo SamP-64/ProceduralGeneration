@@ -76,6 +76,8 @@ public class GridManager : MonoBehaviour
 
     public void Generate()
     {
+
+        enemyManager.DeleteAllEnemies();
         level++;
         levelText.text = "Level: " + level;
         string maxSteps = maxStepsInputField.text;
@@ -101,7 +103,7 @@ public class GridManager : MonoBehaviour
         {
             m_walkers.Add(new Walker(m_grid.cells[(int)origin.x, (int)origin.y], maxStepCount));
         }
-       
+
         //StartCoroutine(MoveTick());
         MoveTick();
 
@@ -109,7 +111,7 @@ public class GridManager : MonoBehaviour
     Vector2 RandomStartPoint()
     {
         int x = Random.Range(1 + (m_xSize / 2), m_xSize - (m_xSize / 2));
-        int y = Random.Range(1 + (m_ySize /2) , m_ySize - (m_ySize / 2));
+        int y = Random.Range(1 + (m_ySize / 2), m_ySize - (m_ySize / 2));
         origin = new Vector2(x, y);
         return origin;
     }
@@ -127,7 +129,7 @@ public class GridManager : MonoBehaviour
     void MoveTick()
     {
 
-       //   yield return new WaitForSeconds(0.1f);
+        //   yield return new WaitForSeconds(0.1f);
         int deadWalkers = 0;
         for (int i = 0; i < m_walkers.Count; i++)
         {
@@ -148,18 +150,20 @@ public class GridManager : MonoBehaviour
         {
             //  m_drawWalkers = false;
 
+          
             CreateRooms();
             CreateTiles();
             CheckForWalls();
 
             player.StartPosition(origin);
 
-           // CreateRoom(14,14);
+            // CreateRoom(14,14);
             PlacePickup();
-           
+
             AddStartTile();
             AddEndTile();
 
+           // GenerateCoinRoom(10, 10, 6);
         }
 
 
@@ -234,19 +238,19 @@ public class GridManager : MonoBehaviour
         //  a.transform.parent = m_tileObjectBin.transform;
 
     }
- 
+
 
     void CreateTiles()
     {
 
-       
+
         for (int x = 0; x < m_xSize; x++)
         {
             for (int y = 0; y < m_ySize; y++)
             {
 
 
-                if (tilemap.HasTile( new Vector3Int(x, y, 0)))
+                if (tilemap.HasTile(new Vector3Int(x, y, 0)))
                 {
                     continue;
                 }
@@ -465,7 +469,7 @@ public class GridManager : MonoBehaviour
                     isSurrounded = false;
                     downEmpty = false;
                 }
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.left) != null )
+                if (m_grid.cells[x, y].GetNeighbour(Vector2.left) != null)
                 {
                     if (!m_grid.cells[x, y].GetNeighbour(Vector2.left).traversed)
                     {
@@ -489,15 +493,15 @@ public class GridManager : MonoBehaviour
                     }
                 }
                 else
-                { 
-                isSurrounded = false;
-                rightEmpty = false;
+                {
+                    isSurrounded = false;
+                    rightEmpty = false;
                 }
 
                 Matrix4x4 defaultMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 0), Vector3.one);
                 tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), defaultMatrix);
 
-               
+
 
                 if (!isSurrounded)
                 {
@@ -633,13 +637,13 @@ public class GridManager : MonoBehaviour
 
                 if (m_grid.cells[x, y].traversed == true)
                 {
-               
-                    if (Random.Range(0, (m_xSize * m_ySize) / 7 ) == 0)
+
+                    if (Random.Range(0, (m_xSize * m_ySize) / 7) == 0)
                     {
-                       
+
                         tilemap.SetTile(new Vector3Int(x, y, 0), pickup);
                     }
-                    
+
                 }
 
             }
@@ -650,7 +654,7 @@ public class GridManager : MonoBehaviour
 
         TileBase collidedTile = tilemap.GetTile(position);    // Get the tile at the collided position
 
-        if (collidedTile == pickup )
+        if (collidedTile == pickup)
         {
             tilemap.SetTile(position, Middle);   // Replace the coin tile with the floor tile
             coins++;
@@ -686,7 +690,7 @@ public class GridManager : MonoBehaviour
 
         Debug.Log(m_xSize);
 
-        if (xStart > (m_xSize - size) )
+        if (xStart > (m_xSize - size))
         {
             xStart = m_xSize - size - 5;
         }
@@ -721,15 +725,15 @@ public class GridManager : MonoBehaviour
 
     public void CreateRoom(int xStart, int yStart, int size)
     {
-       
-        bool canCreate = CanCreate(ref xStart, ref yStart, size);
-       
 
-        if(canCreate)
+        bool canCreate = CanCreate(ref xStart, ref yStart, size);
+
+
+        if (canCreate)
         {
             Debug.Log("Creating Room at " + xStart + " " + yStart);
             GenerateRandomRoom(xStart, yStart, size);
-         
+
         }
         else
         {
@@ -740,7 +744,7 @@ public class GridManager : MonoBehaviour
     void GenerateRandomRoom(int xStart, int yStart, int size)
     {
 
-        int random = Random.Range(1, 1);
+        int random = Random.Range(1, 3);
 
         switch (random)
         {
@@ -748,6 +752,8 @@ public class GridManager : MonoBehaviour
                 GenerateCoinRoom(xStart, yStart, size);
                 break;
             case 2:
+                GenerateEnemyRoom(xStart, yStart, size);
+                break;
             case 3:
             case 4:
             case 5:
@@ -761,11 +767,11 @@ public class GridManager : MonoBehaviour
     {
 
         Debug.Log("Generating Coin Room");
-        for (int x = xStart; x < xStart + size; x++)
+        for (int x = xStart; x < xStart + size ; x++)
         {
-            for (int y = yStart; y < yStart + size; y++)
+            for (int y = yStart; y < yStart + size ; y++)
             {
-              //  Debug.Log(x + " " + y);
+                //  Debug.Log(x + " " + y);
 
                 int random = Random.Range(1, 3);
                 if (random == 1)
@@ -778,9 +784,45 @@ public class GridManager : MonoBehaviour
                 }
                 m_grid.cells[x, y].traversed = true;
                 m_grid.cells[x, y].room = true;
+
             }
         }
     }
-    #endregion
-}
 
+
+    public GameObject enemyPrefab;
+    public EnemyManager enemyManager;
+
+
+    
+
+    void GenerateEnemyRoom(int xStart, int yStart, int size)
+    {
+
+        int middleX = xStart + size / 2;
+        int middleY = yStart + size / 2;
+
+        Debug.Log("Generating Enemy Room");
+        for (int x = xStart; x < xStart + size; x++)
+        {
+            for (int y = yStart; y < yStart + size ; y++)
+            {
+                Vector3 spawnPosition =  new Vector2(x, y);
+
+
+                if (x >= middleX - 1 && x <= middleX + 1 && y >= middleY - 1 && y <= middleY + 1) // spawns 9 in the middle
+                {
+                    GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+                }
+
+                tilemap.SetTile(new Vector3Int(x, y, 0), Middle);
+                m_grid.cells[x, y].traversed = true;
+                m_grid.cells[x, y].room = true;
+
+
+            }
+        }
+        #endregion
+    }
+
+}

@@ -5,13 +5,10 @@ using UnityEngine;
 
 public class Grid
 {
-    #region Variables
-    public int m_xSize, m_ySize;
-    public Cell[,] cells;
+    public int m_xSize, m_ySize; // Grid size
+    public Cell[,] cells; // 2D array of cells
   
-    #endregion
-
-    public Grid(int _xsize, int _ySize)
+    public Grid(int _xsize, int _ySize) //Grid Constructor
     {
         m_xSize = _xsize;
         m_ySize = _ySize;
@@ -19,9 +16,6 @@ public class Grid
         SetupNeighbours();
 
     }
-
-
-    #region Private Functions
 
     private Cell[,] CreateCells()
     {
@@ -51,24 +45,4 @@ public class Grid
             }
         }
     }
-
-    #endregion
-
-    #region Public Functions
-
-    public void DebugGrid()
-    {
-        for (int iX = 0; iX < m_xSize; iX++)
-        {
-            for (int iY = 0; iY < m_ySize; iY++)
-            {
-                cells[iX, iY].DebugCell();
-            }
-        }
-
-    }
-
-    #endregion
-
-
 }

@@ -1,6 +1,6 @@
+ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using System.Collections.Generic;
 
 public class AiMovement : MonoBehaviour
 {
@@ -9,37 +9,45 @@ public class AiMovement : MonoBehaviour
     public Tilemap tilemap;
 
     private List<Vector3Int> path;
-    void Update()
+    private Vector3Int lastPlayerCell;
+    [SerializeField] float updatePathInterval = 0.1f; // Update path every 1 second
+    private float lastUpdateTime;
+
+    private void Start()
     {
-        FindPlayer();
+        lastUpdateTime = Time.time;
+        lastPlayerCell = tilemap.WorldToCell(player.position);
+       // Debug.Log("Starting lastUpdateTime: " + lastUpdateTime);
+    }
+
+    private void Update()
+    {
+        float currentTime = Time.time;
+        //Debug.Log("Current time: " + currentTime);
+        if (currentTime - lastUpdateTime > updatePathInterval)
+        {
+          //  Debug.LogWarning("Time difference: " + (currentTime - lastUpdateTime));
+            FindPlayer();
+            lastUpdateTime = currentTime;
+        }
+
         MoveAlongPath();
     }
 
-    void FindPlayer()
+    private void FindPlayer()
     {
-
-        Vector3Int startCell = tilemap.WorldToCell(transform.position);
-
-        
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position); // distance between the AI and the player
-        Debug.Log(distanceToPlayer);
-        float maxSearchDistance = 20.0f;
-
-        if (distanceToPlayer <= maxSearchDistance)
+        Vector3Int playerCell = tilemap.WorldToCell(player.position);
+        if (playerCell != lastPlayerCell)
         {
-            Vector3Int goalCell = tilemap.WorldToCell(player.position);
+            Vector3Int startCell = tilemap.WorldToCell(transform.position);
+            Vector3Int goalCell = playerCell;
 
             path = AStar.FindPath(startCell, goalCell, tilemap);
-        }
-        else
-        {
-            path = null; // Clear the path if the player is too far away
-           // Roam(startCell);
-            
+            lastPlayerCell = playerCell;
         }
     }
-    
-    void MoveAlongPath()
+
+    private void MoveAlongPath()
     {
         if (path != null && path.Count > 0)
         {
@@ -55,3 +63,5 @@ public class AiMovement : MonoBehaviour
         }
     }
 }
+
+
