@@ -23,13 +23,13 @@ public class GridManager : MonoBehaviour
     private Cell m_startCell;
 
 
-    [SerializeField] Tilemap tilemap;
+    [SerializeField] private Tilemap tilemap;
 
-    public MovePlayer player;
-    int level;
-    int coins;
-    public TextMeshProUGUI levelText;
-    public TextMeshProUGUI coinText;
+    [SerializeField] private MovePlayer player;
+    private int level;
+    private int coins;
+    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI coinText;
 
     public Transform enemy;
 
@@ -55,10 +55,10 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] Tile pickup;
 
-    public TMP_InputField xSizeInputField;
-    public TMP_InputField ySizeInputField;
-    public TMP_InputField walkersInputField;
-    public TMP_InputField maxStepsInputField;
+    [SerializeField] private  TMP_InputField xSizeInputField;
+    [SerializeField] private TMP_InputField ySizeInputField;
+    [SerializeField] private TMP_InputField walkersInputField;
+    [SerializeField] private TMP_InputField maxStepsInputField;
   
     [SerializeField] private Slider xRoomSlider;
     [SerializeField] private Slider yRoomSlider;
@@ -66,8 +66,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI xRoomSizeText;
     [SerializeField] private TextMeshProUGUI yRoomSizeText;
 
-    private int roomSizeX;
-    private int roomSizeY;
+    private int roomSizeX = 3;
+    private int roomSizeY = 3;
     #endregion
 
     #region Private Functions
@@ -776,7 +776,9 @@ public class GridManager : MonoBehaviour
                 int random = Random.Range(1, 3);
                 if (random == 1)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), pickup);
+                    //  tilemap.SetTile(new Vector3Int(x, y, 0), pickup);
+                    Tile tile =  TileMapManager.Inst.GetTile("Coin");
+                    tilemap.SetTile(new Vector3Int(x, y, 0), tile);
                 }
                 else
                 {
