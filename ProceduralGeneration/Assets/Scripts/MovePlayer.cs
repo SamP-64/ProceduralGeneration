@@ -83,7 +83,6 @@ public class MovePlayer : MonoBehaviour
         
         if (collision.gameObject.name == "StairsCollider")
         {
-            Debug.Log("Next");
             gridManager.Generate();
         }
 

@@ -9,7 +9,6 @@ public class AiMovement : MonoBehaviour
     public Tilemap tilemap;
 
     private List<Vector3Int> path;
-    
     void Update()
     {
         FindPlayer();
@@ -18,13 +17,28 @@ public class AiMovement : MonoBehaviour
 
     void FindPlayer()
     {
+
         Vector3Int startCell = tilemap.WorldToCell(transform.position);
-        Vector3Int goalCell = tilemap.WorldToCell(player.position);
 
-        // Use A* or other pathfinding algorithm to calculate path
-        path = AStar.FindPath(startCell, goalCell, tilemap);
+        
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position); // distance between the AI and the player
+        Debug.Log(distanceToPlayer);
+        float maxSearchDistance = 20.0f;
+
+        if (distanceToPlayer <= maxSearchDistance)
+        {
+            Vector3Int goalCell = tilemap.WorldToCell(player.position);
+
+            path = AStar.FindPath(startCell, goalCell, tilemap);
+        }
+        else
+        {
+            path = null; // Clear the path if the player is too far away
+           // Roam(startCell);
+            
+        }
     }
-
+    
     void MoveAlongPath()
     {
         if (path != null && path.Count > 0)

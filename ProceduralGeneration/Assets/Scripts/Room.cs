@@ -4,19 +4,12 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    public bool up;
-    public bool down;
-    public bool left;
-    public bool right;
+    public Vector2 position;
+    public Vector2 size;
 
-    void Start()
+    public Room(Vector2 _position, Vector2 _size)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        position = _position;
+        size = _size;
     }
 }

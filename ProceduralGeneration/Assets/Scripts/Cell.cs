@@ -12,22 +12,15 @@ namespace GridSystem
         private Dictionary<Vector2, Cell> m_neighbours = new Dictionary<Vector2, Cell>()
         {
             {Vector2.up, null},
-            
             {Vector2.right, null},
-            
             {Vector2.down, null},
-           
-            {Vector2.left, null},
-             {Vector2.down + Vector2.left, null},
-            {Vector2.up + Vector2.left, null},
-            {Vector2.up + Vector2.right, null},
-            {Vector2.down + Vector2.right, null}
+            {Vector2.left, null}
         };
         public Tile cellContent;
         public Color cellDebugColour;
         public bool traversed = false;
+        public bool room = false;
         public bool wall = false;
-        public Room room;
         public float heat = 0;
         #endregion
 
@@ -49,22 +42,12 @@ namespace GridSystem
             return m_neighbours[Direction];
         }
 
-        public void SetNeighbours(Cell _up, Cell _right, Cell _down, Cell _left, Cell _upLeft, Cell _upRight, Cell _downRight, Cell _downLeft)
+        public void SetNeighbours(Cell _up, Cell _right, Cell _down, Cell _left)
         {
             m_neighbours[Vector2.up] = _up;
             m_neighbours[Vector2.right] = _right;
             m_neighbours[Vector2.down] = _down;
             m_neighbours[Vector2.left] = _left;
-
-            m_neighbours[Vector2.up + Vector2.left] = _upLeft;
-            m_neighbours[Vector2.up + Vector2.right] = _upRight;
-            m_neighbours[Vector2.down + Vector2.left] = _downLeft;
-            m_neighbours[Vector2.down + Vector2.right] = _downRight;
-
-            if (_up == null || _right == null || _down == null || _left == null)
-            {
-                heat = 1;
-            }
         }
 
         public void DebugCell()
@@ -89,37 +72,40 @@ namespace GridSystem
             int n = 0;
             foreach (KeyValuePair<Vector2, Cell> entry in m_neighbours)
             {
-                Debug.Log(n);
                 if (entry.Value != null)
                 {
                     weights[n] = 1 - entry.Value.heat;
                 }
                 n++;
-
-                if (n == 4) // Check if n reaches 4
-                {
-                    break; // Exit the loop
-                }
             }
             float[] randoms = new float[4]
             {
-                Random.Range(0,weights[0]),
-                Random.Range(0,weights[1]),
-                Random.Range(0,weights[2]),
-                Random.Range(0,weights[3])
+                Random.Range(0,weights[0] ),
+                Random.Range(0,weights[1] ),
+                Random.Range(0,weights[2] ),
+                Random.Range(0,weights[3] )
             };
 
             int iLargest = 0;
-            float largest = 0;
+
+            List<int> highestNumbers = new List<int>();
+            float maxRandomValue = float.MinValue;
 
             for (int i = 0; i < randoms.Length; i++)
             {
-                if (randoms[i] > largest)
+                if (randoms[i] > maxRandomValue)
                 {
-                    largest = randoms[i];
-                    iLargest = i;
+                    maxRandomValue = randoms[i];
+                    highestNumbers.Clear(); 
+                    highestNumbers.Add(i); 
+                }
+                else if (randoms[i] == maxRandomValue)
+                {
+                    highestNumbers.Add(i); 
                 }
             }
+
+            iLargest = highestNumbers[Random.Range(0, highestNumbers.Count)]; // List to stop ties causing problems
 
             Cell c = GetRandomNeighbour(iLargest);
 
@@ -128,7 +114,7 @@ namespace GridSystem
 
         public Cell GetRandomNeighbour(int _r)
         {
-            Vector2 direction = Vector2.down;
+            Vector2 direction = Vector2.zero;
             switch (_r)
             {
                 case 0:
@@ -147,7 +133,7 @@ namespace GridSystem
             }
             return m_neighbours[direction];
         }
-
+     
         public void UpdateNeighbourHeat()
         {
 
@@ -165,21 +151,21 @@ namespace GridSystem
                 {
                     neighboursTraversed++;
                 }
-                else if (i == 1 && down != null && down.traversed == false)
+                if (i == 1 && down != null && down.traversed == false)
                 {
                     neighboursTraversed++;
                 }
-                else if (i == 2 && left != null && left.traversed == false)
+                if (i == 2 && left != null && left.traversed == false)
                 {
                     neighboursTraversed++;
                 }
-                else if (i == 3 && right != null && right.traversed == false)
+                 if (i == 3 && right != null && right.traversed == false)
                 {
                     neighboursTraversed++;
                 }
             }
 
-            heat = neighboursTraversed;
+            heat = 4 - neighboursTraversed;
         }
     }
 

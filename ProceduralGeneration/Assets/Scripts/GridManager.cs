@@ -15,7 +15,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int m_ySize;
     [SerializeField] private int maxStepCount = 20;
     private Grid m_grid;
-    [SerializeField] private int m_walkerCount = 5;
+    [SerializeField] private int m_walkerCount;
     private List<Walker> m_walkers = new List<Walker>();
 
     private Vector2 origin;
@@ -101,14 +101,15 @@ public class GridManager : MonoBehaviour
         {
             m_walkers.Add(new Walker(m_grid.cells[(int)origin.x, (int)origin.y], maxStepCount));
         }
+       
         //StartCoroutine(MoveTick());
         MoveTick();
 
     }
     Vector2 RandomStartPoint()
     {
-        int x = Random.Range(1, m_xSize - 1);
-        int y = Random.Range(1, m_ySize - 1);
+        int x = Random.Range(1 + (m_xSize / 2), m_xSize - (m_xSize / 2));
+        int y = Random.Range(1 + (m_ySize /2) , m_ySize - (m_ySize / 2));
         origin = new Vector2(x, y);
         return origin;
     }
@@ -126,7 +127,7 @@ public class GridManager : MonoBehaviour
     void MoveTick()
     {
 
-        //  yield return new WaitForSeconds(0.001f);
+       //   yield return new WaitForSeconds(0.1f);
         int deadWalkers = 0;
         for (int i = 0; i < m_walkers.Count; i++)
         {
@@ -147,12 +148,15 @@ public class GridManager : MonoBehaviour
         {
             //  m_drawWalkers = false;
 
-
+            CreateRooms();
             CreateTiles();
             CheckForWalls();
+
             player.StartPosition(origin);
 
+           // CreateRoom(14,14);
             PlacePickup();
+           
             AddStartTile();
             AddEndTile();
 
@@ -161,6 +165,13 @@ public class GridManager : MonoBehaviour
 
     }
 
+    private void CreateRooms()
+    {
+        foreach (Walker walker in m_walkers)
+        {
+            CreateRoom((int)walker.position.x, (int)walker.position.y, 6);
+        }
+    }
 
     private void AddStartTile()
     {
@@ -200,7 +211,6 @@ public class GridManager : MonoBehaviour
         {
 
             walkerDistances.Add(m_walkers[i].GetDistanceFrom(origin));
-            Debug.Log(m_walkers[i].position + " is " + walkerDistances[i] + " from " + origin);
         }
 
         int iLargest = 0;
@@ -224,127 +234,22 @@ public class GridManager : MonoBehaviour
         //  a.transform.parent = m_tileObjectBin.transform;
 
     }
-    public void CreateRooms()
-    {
-
-
-
-        for (int x = 0; x < m_xSize; x++)
-        {
-            for (int y = 0; y < m_ySize; y++)
-            {
-
-                if (m_grid.cells[x, y].traversed == false) { continue; }
-
-                tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 1, 0), Middle);
-
-
-                tilemap.SetTile(new Vector3Int((x * 3), (y * 3) + 2, 0), topLeft);
-                tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3) + 2, 0), topRight);
-                tilemap.SetTile(new Vector3Int((x * 3), (y * 3), 0), bottomLeft);
-                tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3), 0), bottomRight);
-
-
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.up) != null && m_grid.cells[x, y].GetNeighbour(Vector2.up) == null)
-                {
-
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.up).traversed == false)
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 2, 0), top);
-                    }
-                    else
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 2, 0), Middle);
-                    }
-
-                }
-
-
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.up) != null)
-                {
-
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.up).traversed == false)
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 2, 0), top);
-                    }
-                    else
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 2, 0), Middle);
-                    }
-
-                }
-                else
-                {
-                    tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3) + 2, 0), top);
-                }
-
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.down) != null)
-                {
-
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.down).traversed == false)
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3), 0), bottom);
-                    }
-                    else
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3), 0), Middle);
-                    }
-
-                }
-                else
-                {
-                    tilemap.SetTile(new Vector3Int((x * 3) + 1, (y * 3), 0), bottom);
-                }
-
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.right) != null)
-                {
-
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.right).traversed == false)
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3) + 1, 0), right);
-                    }
-                    else
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3) + 1, 0), Middle);
-                    }
-
-                }
-                else
-                {
-                    tilemap.SetTile(new Vector3Int((x * 3) + 2, (y * 3) + 1, 0), right);
-                }
-
-                if (m_grid.cells[x, y].GetNeighbour(Vector2.left) != null)
-                {
-
-                    if (m_grid.cells[x, y].GetNeighbour(Vector2.left).traversed == false)
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3), (y * 3) + 1, 0), left);
-                    }
-                    else
-                    {
-                        tilemap.SetTile(new Vector3Int((x * 3), (y * 3) + 1, 0), Middle);
-                    }
-
-                }
-                else
-                {
-                    tilemap.SetTile(new Vector3Int((x * 3), (y * 3) + 1, 0), left);
-                }
-
-            }
-        }
-
-
-    }
+ 
 
     void CreateTiles()
     {
 
+       
         for (int x = 0; x < m_xSize; x++)
         {
             for (int y = 0; y < m_ySize; y++)
             {
+
+
+                if (tilemap.HasTile( new Vector3Int(x, y, 0)))
+                {
+                    continue;
+                }
 
                 if (m_grid.cells[x, y].traversed == false)
                 {
@@ -518,18 +423,19 @@ public class GridManager : MonoBehaviour
         {
             for (int y = 0; y < m_ySize; y++)
             {
+
+                if (m_grid.cells[x, y].room) continue;
+
+                tilemap.SetTile(new Vector3Int(x, y, 0), Middle);
+
                 if (m_grid.cells[x, y].traversed) continue;
+
 
                 bool isSurrounded = true;
                 bool leftEmpty = true;
                 bool rightEmpty = true;
                 bool upEmpty = true;
                 bool downEmpty = true;
-
-                bool upLeftEmpty = true;
-                bool upRightEmpty = true;
-                bool downLeftEmpty = true;
-                bool downRightEmpty = true;
 
                 // Check horizontal and vertical neighbors
                 if (m_grid.cells[x, y].GetNeighbour(Vector2.up) != null)
@@ -588,45 +494,16 @@ public class GridManager : MonoBehaviour
                 rightEmpty = false;
                 }
 
-                // Check diagonal neighbors
-                if (m_grid.cells[x, y].GetNeighbour(new Vector2(1, 1)) != null)
-                {
-                    if(!m_grid.cells[x, y].GetNeighbour(new Vector2(1, 1)).traversed)
-                    {
-                        isSurrounded = false;
-                        upRightEmpty = false;
-                    }
-                
-                }
-                if (m_grid.cells[x, y].GetNeighbour(new Vector2(1, -1)) != null && !m_grid.cells[x, y].GetNeighbour(new Vector2(1, -1)).traversed)
-                {
-                    isSurrounded = false;
-                    downRightEmpty = false;
-                }
-                if (m_grid.cells[x, y].GetNeighbour(new Vector2(-1, 1)) != null && !m_grid.cells[x, y].GetNeighbour(new Vector2(-1, 1)).traversed)
-                {
-                    isSurrounded = false;
-                    upLeftEmpty = false;
-                }
-                if (m_grid.cells[x, y].GetNeighbour(new Vector2(-1, -1)) != null && !m_grid.cells[x, y].GetNeighbour(new Vector2(-1, -1)).traversed)
-                {
-                    isSurrounded = false;
-                    downLeftEmpty = false;
-                }
-
                 Matrix4x4 defaultMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, 0), Vector3.one);
                 tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), defaultMatrix);
 
-                // Set tiles based on neighboring conditions
+               
+
                 if (!isSurrounded)
                 {
                     wall.colliderType = Tile.ColliderType.Grid;
                     tilemap.SetTile(new Vector3Int(x, y, 0), wall);
                     m_grid.cells[x, y].wall = true;
-                }
-                if (!isSurrounded)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), Middle);
                 }
 
                 if (upEmpty && !downEmpty && !leftEmpty && !rightEmpty)
@@ -804,6 +681,106 @@ public class GridManager : MonoBehaviour
 
     }
 
+    bool CanCreate(ref int xStart, ref int yStart, int size)
+    {
+
+        Debug.Log(m_xSize);
+
+        if (xStart > (m_xSize - size) )
+        {
+            xStart = m_xSize - size - 5;
+        }
+
+        if (xStart < 2)
+        {
+            xStart = 2;
+        }
+        if (yStart > (m_ySize - size))
+        {
+            yStart = m_ySize - size - 5;
+        }
+        if (yStart < 2)
+        {
+            yStart = 2;
+        }
+
+        for (int x = xStart; x < xStart + size; x++)
+        {
+            for (int y = yStart; y < yStart + size; y++)
+            {
+
+                if ((m_grid.cells[x, y] == null || m_grid.cells[x, y].room == true))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public void CreateRoom(int xStart, int yStart, int size)
+    {
+       
+        bool canCreate = CanCreate(ref xStart, ref yStart, size);
+       
+
+        if(canCreate)
+        {
+            Debug.Log("Creating Room at " + xStart + " " + yStart);
+            GenerateRandomRoom(xStart, yStart, size);
+         
+        }
+        else
+        {
+            Debug.Log("Cannot create at " + xStart + " " + yStart);
+        }
+    }
+
+    void GenerateRandomRoom(int xStart, int yStart, int size)
+    {
+
+        int random = Random.Range(1, 1);
+
+        switch (random)
+        {
+            case 1:
+                GenerateCoinRoom(xStart, yStart, size);
+                break;
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                break;
+            default:
+                break;
+        }
+
+    }
+    void GenerateCoinRoom(int xStart, int yStart, int size)
+    {
+
+        Debug.Log("Generating Coin Room");
+        for (int x = xStart; x < xStart + size; x++)
+        {
+            for (int y = yStart; y < yStart + size; y++)
+            {
+              //  Debug.Log(x + " " + y);
+
+                int random = Random.Range(1, 3);
+                if (random == 1)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), pickup);
+                }
+                else
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), Middle);
+                }
+                m_grid.cells[x, y].traversed = true;
+                m_grid.cells[x, y].room = true;
+            }
+        }
+    }
     #endregion
 }
 
