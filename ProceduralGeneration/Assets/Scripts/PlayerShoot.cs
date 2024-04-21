@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerShoot : MonoBehaviour
 {
     [SerializeField] private GameObject projectilePrefab;
     private float shootForce = 10f;
     public float cooldown = 0.1f;
-
     private float lastShootTime;
 
+    private int ammo = 50;
+    [SerializeField] private TextMeshProUGUI ammoText;
+
+  
     void Update()
     {
 
@@ -40,6 +44,15 @@ public class PlayerShoot : MonoBehaviour
 
     void Shoot(Vector3 direction)
     {
+
+        if (ammo <= 0)
+        {
+            Debug.Log("Out of ammo!");
+            return;
+        }
+      
+        ammo--;
+        ammoText.text = "Ammo: " + ammo;
 
         GameObject projectile = Instantiate(projectilePrefab, transform.position + direction.normalized * 2, Quaternion.identity);
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();

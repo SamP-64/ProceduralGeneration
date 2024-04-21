@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 using TMPro;
-using static UnityEngine.Tilemaps.Tile;
 
 public class GridManager : MonoBehaviour
 {
