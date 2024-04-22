@@ -40,7 +40,7 @@ public class TileMapManager : MonoBehaviour
         else
         {
             newTile = new CustomTile();
-            newTile.Name = "BackUp Tile";
+            newTile.Name = "Middle";
         }
 
         return newTile.tile;

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
-public static class AStar // Found Online to use
+public static class AStar
 {
     public static List<Vector3Int> FindPath(Vector3Int startCell, Vector3Int goalCell, Tilemap tilemap)
     {
@@ -62,6 +62,12 @@ public static class AStar // Found Online to use
                 cameFrom[neighbor] = currentCell;
                 gScore[neighbor] = tentativeGScore;
                 fScore[neighbor] = gScore[neighbor] + Heuristic(neighbor, goalCell);
+
+                // Introduce randomness: Occasionally choose a random neighboring cell instead of the one with the lowest fScore
+                if (Random.value < 0.16f) // Adjust this probability as needed
+                {
+                    currentCell = neighbor;
+                }
             }
         }
 
@@ -108,17 +114,14 @@ public static class AStar // Found Online to use
             TileBase neighborTileBase = tilemap.GetTile(neighborCell);
             Tile neighborTile = neighborTileBase as Tile;
 
-        
             if (neighborTile != null && neighborTile.colliderType == Tile.ColliderType.None)
             {
-               
                 neighbors.Add(neighborCell);  // If the tile doesn't have a collider, add it as a valid neighbor
             }
         }
 
         return neighbors;
     }
-
 
     static List<Vector3Int> ReconstructPath(Dictionary<Vector3Int, Vector3Int> cameFrom, Vector3Int currentCell)
     {

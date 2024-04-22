@@ -18,7 +18,7 @@ public class AiMovement : MonoBehaviour
     {
         lastUpdateTime = Time.time;
         lastPlayerCell = tilemap.WorldToCell(player.position);
-       // Debug.Log("Starting lastUpdateTime: " + lastUpdateTime);
+        // Debug.Log("Starting lastUpdateTime: " + lastUpdateTime);
     }
 
     private void Update()
@@ -27,7 +27,7 @@ public class AiMovement : MonoBehaviour
         //Debug.Log("Current time: " + currentTime);
         if (currentTime - lastUpdateTime > updatePathInterval)
         {
-          //  Debug.LogWarning("Time difference: " + (currentTime - lastUpdateTime));
+            //  Debug.LogWarning("Time difference: " + (currentTime - lastUpdateTime));
             FindPlayer();
             lastUpdateTime = currentTime;
         }
@@ -37,7 +37,7 @@ public class AiMovement : MonoBehaviour
 
     private void FindPlayer()
     {
-       
+
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);  // Distance between the AI and the player
 
         if (distanceToPlayer <= searchRange)  // Check if the player is within the search range
@@ -75,5 +75,3 @@ public class AiMovement : MonoBehaviour
         }
     }
 }
-
-

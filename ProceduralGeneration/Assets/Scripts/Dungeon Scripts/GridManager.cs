@@ -21,7 +21,6 @@ public class GridManager : MonoBehaviour
     private Vector2 origin;
     private Cell m_startCell;
 
-
     [SerializeField] private Tilemap tilemap;
 
     [SerializeField] private MovePlayer player;
@@ -29,8 +28,6 @@ public class GridManager : MonoBehaviour
     private int coins;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private TextMeshProUGUI coinText;
-
-    public Transform enemy;
 
     [SerializeField] Tile empty;
 
@@ -51,7 +48,6 @@ public class GridManager : MonoBehaviour
 
     #region Private Functions
 
-    //OnEnable()
 
     public GameObject panel;
 
@@ -59,6 +55,19 @@ public class GridManager : MonoBehaviour
     {
         player = player.GetComponent<MovePlayer>();
 
+        SetSliders();
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            panel.SetActive(!panel.activeSelf); // Toggle panel on / off
+        }
+    }
+
+    private void SetSliders()
+    {
         xRoomSlider.onValueChanged.AddListener((v) =>
         {
             xRoomSizeText.text = v.ToString("0");
@@ -69,36 +78,24 @@ public class GridManager : MonoBehaviour
             yRoomSizeText.text = v.ToString("0");
             int.TryParse(yRoomSizeText.text, out roomSizeY);
         });
-
     }
-
-    public void Update()
+    public void PlayerDies()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-
-            panel.SetActive(!panel.activeSelf); // Toggle panel on / off
-        }
+        level = 1;
+        levelText.text = "Level: " + level;
+        coins = 0;
+        coinText.text = "Coins: " + coins;
+        PlayerShoot.Instance.ResetAmmo();
     }
 
     public void Generate()
     {
 
-        enemyManager.DeleteAllEnemies();
         level++;
         levelText.text = "Level: " + level;
-        string maxSteps = maxStepsInputField.text;
-        int.TryParse(maxSteps, out maxStepCount);
 
-        string walkers = walkersInputField.text;
-        int.TryParse(walkers, out m_walkerCount);
-
-
-        string x = xSizeInputField.text;
-        int.TryParse(x, out m_xSize);
-
-        string y = ySizeInputField.text;
-        int.TryParse(y, out m_ySize); // Get Values From Input Fields
+        enemyManager.DeleteAllEnemies();
+        StoreInputValues();
 
         m_grid = new Grid(m_xSize, m_ySize);
         origin = RandomStartPoint();
@@ -115,15 +112,26 @@ public class GridManager : MonoBehaviour
         MoveTick();
 
     }
-    Vector2 RandomStartPoint()
+    private void StoreInputValues()
+    {
+        string maxSteps = maxStepsInputField.text;
+        int.TryParse(maxSteps, out maxStepCount);
+
+        string walkers = walkersInputField.text;
+        int.TryParse(walkers, out m_walkerCount);
+
+
+        string x = xSizeInputField.text;
+        int.TryParse(x, out m_xSize);
+
+        string y = ySizeInputField.text;
+        int.TryParse(y, out m_ySize); // Get Values From Input Fields
+    }
+    private Vector2 RandomStartPoint()
     {
         int x = Random.Range(1 + (m_xSize / 2), m_xSize - (m_xSize / 2));
         int y = Random.Range(1 + (m_ySize / 2), m_ySize - (m_ySize / 2));
         origin = new Vector2(x, y);
-        return origin;
-    }
-    public Vector2 GetOrigin()
-    {
         return origin;
     }
 
@@ -228,8 +236,7 @@ public class GridManager : MonoBehaviour
         SpawnTile(Mathf.RoundToInt(c.position.x), Mathf.RoundToInt(c.position.y), "StartStairs");
 
         stairsCollider.transform.position = new Vector2(c.position.x + 0.5f, c.position.y + 0.5f);
-
-        enemy.transform.position = stairsCollider.transform.position;
+        Instantiate(enemyPrefab, stairsCollider.transform.position, Quaternion.identity);
 
     }
 
