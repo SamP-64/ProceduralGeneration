@@ -2,76 +2,57 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
-public static class AStar
+public static class AStar // Found Online to use
 {
     public static List<Vector3Int> FindPath(Vector3Int startCell, Vector3Int goalCell, Tilemap tilemap)
     {
-        // Initialize lists for open and closed nodes
+
         List<Vector3Int> openSet = new List<Vector3Int>();
         HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
-
-        // Dictionary to store the cameFrom values (parent nodes)
         Dictionary<Vector3Int, Vector3Int> cameFrom = new Dictionary<Vector3Int, Vector3Int>();
-
-        // Dictionary to store the cost of reaching each node from the start
         Dictionary<Vector3Int, float> gScore = new Dictionary<Vector3Int, float>();
-
-        // Dictionary to store the estimated total cost of reaching each node
         Dictionary<Vector3Int, float> fScore = new Dictionary<Vector3Int, float>();
-
-        // Add start node to open set with initial score of 0
         openSet.Add(startCell);
         gScore[startCell] = 0f;
         fScore[startCell] = Heuristic(startCell, goalCell);
 
         while (openSet.Count > 0)
         {
-            // Get the node in the open set with the lowest fScore
             Vector3Int currentCell = GetLowestFScore(openSet, fScore);
-
-            // If current node is goal, reconstruct and return path
             if (currentCell == goalCell)
             {
                 return ReconstructPath(cameFrom, currentCell);
             }
 
-            // Move current node from open set to closed set
             openSet.Remove(currentCell);
             closedSet.Add(currentCell);
 
-            // Get neighbors of current node
             List<Vector3Int> neighbors = GetNeighbors(currentCell, tilemap);
 
             foreach (Vector3Int neighbor in neighbors)
             {
-                // If neighbor is in closed set, skip it
+
                 if (closedSet.Contains(neighbor))
                     continue;
 
-                // Calculate tentative gScore for neighbor
-                float tentativeGScore = gScore[currentCell] + 1f; // Assuming each step costs 1
+                float tentativeGScore = gScore[currentCell] + 1f; 
 
-                // If neighbor is not in open set, add it
                 if (!openSet.Contains(neighbor))
                     openSet.Add(neighbor);
-                // If tentative gScore is greater than or equal to existing gScore, skip this neighbor
                 else if (tentativeGScore >= gScore[neighbor])
                     continue;
 
-                // This path is the best one found so far, record it!
                 cameFrom[neighbor] = currentCell;
                 gScore[neighbor] = tentativeGScore;
                 fScore[neighbor] = gScore[neighbor] + Heuristic(neighbor, goalCell);
 
-                // Introduce randomness: Occasionally choose a random neighboring cell instead of the one with the lowest fScore
-                if (Random.value < 0.16f) // Adjust this probability as needed
+                if (Random.value < 0.16f) 
                 {
                     currentCell = neighbor;
                 }
             }
         }
 
-        // If open set is empty and goal was not found, return empty list
         return new List<Vector3Int>();
     }
 

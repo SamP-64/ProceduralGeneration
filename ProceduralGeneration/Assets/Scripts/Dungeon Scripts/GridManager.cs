@@ -24,7 +24,8 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private MovePlayer player;
-   
+    [SerializeField] private Player playerCharacter;
+
     private int level;
     private int coins;
 
@@ -96,7 +97,8 @@ public class GridManager : MonoBehaviour
             tilemap.SetTile(position, null);
         }
     }
-    public void Generate()
+
+    public void Generate() // Generates a new grid
     {
 
         level++;
@@ -107,14 +109,6 @@ public class GridManager : MonoBehaviour
 
         if (!GetValues()) { return;}
 
-        GetValues();
-
-        Debug.Log(m_walkerCount + " walk");
-        Debug.Log(m_ySize + " y");
-        Debug.Log(m_xSize + " x");
-        Debug.Log(maxStepCount + " walkerSteps");
-
-        //m_grid = new Grid(m_xSize, m_ySize);
         m_grid = new Grid(m_xSize, m_ySize);
         origin = RandomStartPoint();
 
@@ -155,16 +149,31 @@ public class GridManager : MonoBehaviour
             errorText.text = "Invalid max steps, enter a valid number greater than or equal to " + 10;
             return false;
         }
+        else if (maxStepCount  > 5000)
+        {
+            errorText.text = "Invalid max steps, enter a valid number greater than or equal to " + 5000;
+            return false;
+        }
 
         if ( m_walkerCount < 1)
         {
             errorText.text = "Invalid walker count, enter a valid number greater than or equal to " + 1;
             return false;
         }
+        else if (m_walkerCount > 500)
+        {
+            errorText.text = "Invalid walker count, enter a valid number less than or equal to " + 500;
+            return false;
+        }
 
-        if ( m_xSize < 6)
+        if ( m_xSize < 6 )
         {
             errorText.text = "Invalid x size, enter a valid number greater than or equal to " + 6;
+            return false;
+        }
+        else if (m_xSize > 1000)
+        {
+            errorText.text = "Invalid x size, enter a valid number less than  " + 1000;
             return false;
         }
 
@@ -173,6 +182,12 @@ public class GridManager : MonoBehaviour
             errorText.text = "Invalid y size, enter a valid number greater than or equal to " + 6;
             return false;
         }
+        else if (m_ySize > 1000)
+        {
+            errorText.text = "Invalid y size, enter a valid number less than  " + 1000;
+            return false;
+        }
+
 
         errorText.text = "";
         return true;
@@ -181,11 +196,9 @@ public class GridManager : MonoBehaviour
     private Vector2 RandomStartPoint()
     {
 
-        // int x = Random.Range((m_xSize / 2) - (m_xSize / 4), (m_xSize / 2) + (m_xSize / 4));
-        // int y = Random.Range((m_ySize / 2) - (m_ySize / 4), (m_ySize / 2) + (m_ySize / 4));
+        int x = Random.Range((m_xSize / 2) - (m_xSize / 4), (m_xSize / 2) + (m_xSize / 4));
+        int y = Random.Range((m_ySize / 2) - (m_ySize / 4), (m_ySize / 2) + (m_ySize / 4)); // 25 to 75 percent of origin
 
-        int x = m_xSize / 2;
-        int y = m_ySize / 2;
         origin = new Vector2(x, y);
         return origin;
     }
@@ -281,14 +294,14 @@ public class GridManager : MonoBehaviour
             }
         }
         Cell c = m_walkers[iLargest].currentCell;
-        SpawnTile(Mathf.RoundToInt(c.position.x), Mathf.RoundToInt(c.position.y), "StartStairs");
+        SpawnTile(Mathf.RoundToInt(c.position.x), Mathf.RoundToInt(c.position.y), "EndStairs");
 
         stairsCollider.transform.position = new Vector2(c.position.x + 0.5f, c.position.y + 0.5f);
         Instantiate(enemyPrefab, stairsCollider.transform.position, Quaternion.identity);
 
     }
 
-    void CreateTiles()
+    void CreateTiles() 
     {
         for (int x = 0; x < m_xSize; x++)
         {
@@ -314,7 +327,8 @@ public class GridManager : MonoBehaviour
         }
 
     }
-    void CheckForWalls()
+
+    void CheckForWalls() // Checks what type of wall to place
     {
         for (int x = 0; x < m_xSize; x++)
         {
@@ -526,6 +540,11 @@ public class GridManager : MonoBehaviour
             coins++;
             coinText.text = "Coins: " + coins;
         }
+        else if (collidedTile != null && collidedTile == TileMapManager.Inst.GetTile("Ammo"))
+        {
+            playerCharacter.playerShoot.UpdateAmmo(5);
+            SpawnTile(position.x, position.y, "Middle");
+        }
     }
     private void OnDrawGizmos()
     {
@@ -550,7 +569,7 @@ public class GridManager : MonoBehaviour
 
     }
 
-    private bool CanCreate(ref int xStart, ref int yStart)
+    private bool CanCreate(ref int xStart, ref int yStart) // Checks if a room can be created in that position
     {
 
         if (xStart >= (m_xSize - roomSizeX))
@@ -599,7 +618,7 @@ public class GridManager : MonoBehaviour
     void GenerateRandomRoom(int xStart, int yStart)
     {
 
-        int random = Random.Range(1, 3);
+        int random = Random.Range(1, 4);
 
         switch (random)
         {
@@ -610,6 +629,8 @@ public class GridManager : MonoBehaviour
                 GenerateEnemyRoom(xStart, yStart);
                 break;
             case 3:
+                GenerateAmmoRoom(xStart, yStart);
+                break;
             case 4:
             case 5:
                 break;
@@ -630,6 +651,29 @@ public class GridManager : MonoBehaviour
                 if (random == 1)
                 {
                     SpawnTile(x, y, "Coin");
+                }
+                else
+                {
+                    SpawnTile(x, y, "Middle");
+                }
+                m_grid.cells[x, y].traversed = true;
+                m_grid.cells[x, y].room = true;
+
+            }
+        }
+    }
+    void GenerateAmmoRoom(int xStart, int yStart)
+    {
+
+        for (int x = xStart; x < xStart + roomSizeX; x++)
+        {
+            for (int y = yStart; y < yStart + roomSizeY; y++)
+            {
+
+                int random = Random.Range(1, 4);
+                if (random == 1)
+                {
+                    SpawnTile(x, y, "Ammo");
                 }
                 else
                 {

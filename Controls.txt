@@ -1,0 +1,4 @@
+arrow keys - move
+wasd - shoot in each direction
+f - shoot in current direction
+p - toggle ui panel

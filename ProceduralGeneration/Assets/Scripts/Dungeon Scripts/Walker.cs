@@ -34,15 +34,12 @@ public class Walker
             dead = true;
             return;
         }
-       
-        float x = 0;
-        float y = 0;
 
         if (currentCell != null )
         {
             Cell neighbour = currentCell.GetRandomWeightedNeighbour();
-            x = neighbour.position.x;
-            y = neighbour.position.y; // Values to stop walkers moving to the edge of the grid
+            float x = neighbour.position.x;
+            float y = neighbour.position.y; // Values to stop walkers moving to the edge of the grid
 
             if (neighbour != null && x != 0 && y != 0 && y != gridSizeY - 1 && x != gridSizeX - 1)
             {

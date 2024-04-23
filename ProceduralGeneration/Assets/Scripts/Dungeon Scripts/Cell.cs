@@ -21,7 +21,7 @@ namespace GridSystem
         public bool traversed = false;
         public bool room = false;
         public bool wall = false;
-        public float heat = 0;
+        public float heat = 1;
         #endregion
 
         public Cell(Vector2 _pos)

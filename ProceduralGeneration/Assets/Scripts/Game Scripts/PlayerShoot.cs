@@ -20,7 +20,7 @@ public class PlayerShoot : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null)
+        if (Instance == null) //singleton
         {
             Instance = this;
         }
@@ -73,9 +73,8 @@ public class PlayerShoot : MonoBehaviour
             Debug.Log("Out of ammo");
             return;
         }
-      
-        ammo--;
-        ammoText.text = "Ammo: " + ammo;
+
+        UpdateAmmo(-1);
 
         Vector3 spawnPosition = transform.position + direction.normalized; // Change spawn position depending on direction
         GameObject projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
@@ -88,7 +87,11 @@ public class PlayerShoot : MonoBehaviour
 
         lastShootTime = Time.time;
     }
-
+    public void UpdateAmmo(int value)
+    {
+        ammo = ammo + value;
+        ammoText.text = "Ammo: " + ammo;
+    }
     public void ResetAmmo()
     {
         ammo = maxAmmo;
