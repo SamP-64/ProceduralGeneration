@@ -24,10 +24,8 @@ public class AiMovement : MonoBehaviour
     private void Update()
     {
         float currentTime = Time.time;
-        //Debug.Log("Current time: " + currentTime);
         if (currentTime - lastUpdateTime > updatePathInterval)
         {
-            //  Debug.LogWarning("Time difference: " + (currentTime - lastUpdateTime));
             FindPlayer();
             lastUpdateTime = currentTime;
         }
@@ -48,6 +46,7 @@ public class AiMovement : MonoBehaviour
                 Vector3Int startCell = tilemap.WorldToCell(transform.position);
                 Vector3Int goalCell = playerCell;
 
+
                 path = AStar.FindPath(startCell, goalCell, tilemap);
                 lastPlayerCell = playerCell;
             }
@@ -57,7 +56,6 @@ public class AiMovement : MonoBehaviour
             path = null;
         }
     }
-
 
     private void MoveAlongPath()
     {

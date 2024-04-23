@@ -47,10 +47,10 @@ public class Walker
             if (neighbour != null && x != 0 && y != 0 && y != gridSizeY - 1 && x != gridSizeX - 1)
             {
                 currentCell = neighbour;
-                currentCell.cellDebugColour = Color.black;
+                currentCell.cellDebugColour = Color.cyan;
                 currentCell.traversed = true;
                 position = currentCell.position;
-                currentCell.UpdateNeighbourHeat();
+                currentCell.UpdateHeat();
             }
 
         }

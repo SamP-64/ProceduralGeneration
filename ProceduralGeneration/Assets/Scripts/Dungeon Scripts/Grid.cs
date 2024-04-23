@@ -7,7 +7,7 @@ public class Grid
 {
     public int m_xSize, m_ySize; // Grid size
     public Cell[,] cells; // 2D array of cells
-  
+
     public Grid(int _xsize, int _ySize) //Grid Constructor
     {
         m_xSize = _xsize;

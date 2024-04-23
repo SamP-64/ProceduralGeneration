@@ -117,7 +117,7 @@ namespace GridSystem
             return m_neighbours[direction];
         }
      
-        public void UpdateNeighbourHeat()
+        public void UpdateHeat()
         {
 
             Cell up = GetNeighbour(Vector2.up);

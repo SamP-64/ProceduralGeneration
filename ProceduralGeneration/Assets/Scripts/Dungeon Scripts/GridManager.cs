@@ -10,52 +10,53 @@ using TMPro;
 
 public class GridManager : MonoBehaviour
 {
-    #region Variables
-    [SerializeField] private int m_xSize;
-    [SerializeField] private int m_ySize;
-    [SerializeField] private int maxStepCount = 20;
+    public int m_xSize;
+    public int m_ySize;
+    public int maxStepCount;
+    public int m_walkerCount;
+
     private Grid m_grid;
-    [SerializeField] private int m_walkerCount;
+    
     private List<Walker> m_walkers = new List<Walker>();
 
-    private Vector2 origin;
+    public  Vector2 origin;
     private Cell m_startCell;
 
     [SerializeField] private Tilemap tilemap;
-
     [SerializeField] private MovePlayer player;
+   
     private int level;
     private int coins;
-    [SerializeField] private TextMeshProUGUI levelText;
-    [SerializeField] private TextMeshProUGUI coinText;
-
-    [SerializeField] Tile empty;
-
-    [SerializeField] private  TMP_InputField xSizeInputField;
-    [SerializeField] private TMP_InputField ySizeInputField;
-    [SerializeField] private TMP_InputField walkersInputField;
-    [SerializeField] private TMP_InputField maxStepsInputField;
-  
-    [SerializeField] private Slider xRoomSlider;
-    [SerializeField] private Slider yRoomSlider;
-
-    [SerializeField] private TextMeshProUGUI xRoomSizeText;
-    [SerializeField] private TextMeshProUGUI yRoomSizeText;
 
     private int roomSizeX = 3;
     private int roomSizeY = 3;
-    #endregion
 
-    #region Private Functions
+    [SerializeField] Tile empty;
 
+    public GameObject stairsCollider;
+    public GameObject enemyPrefab;
+    public EnemyManager enemyManager;
 
-    public GameObject panel;
+    [Header("UI")]
+    [SerializeField] private TMP_InputField xSizeInputField;
+    [SerializeField] private TMP_InputField ySizeInputField;
+    [SerializeField] private TMP_InputField walkersInputField;
+    [SerializeField] private TMP_InputField maxStepsInputField;
+    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI coinText;
+    [SerializeField] private Slider xRoomSlider;
+    [SerializeField] private Slider yRoomSlider;
+    [SerializeField] private TextMeshProUGUI xRoomSizeText;
+    [SerializeField] private TextMeshProUGUI yRoomSizeText;
+    [SerializeField] private TextMeshProUGUI errorText;
+    [SerializeField] private GameObject panel;
 
     public void Start()
     {
         player = player.GetComponent<MovePlayer>();
 
         SetSliders();
+        
     }
 
     public void Update()
@@ -88,6 +89,13 @@ public class GridManager : MonoBehaviour
         PlayerShoot.Instance.ResetAmmo();
     }
 
+    private void ClearTilemap()
+    {
+        foreach (Vector3Int position in tilemap.cellBounds.allPositionsWithin)
+        {
+            tilemap.SetTile(position, null);
+        }
+    }
     public void Generate()
     {
 
@@ -95,14 +103,26 @@ public class GridManager : MonoBehaviour
         levelText.text = "Level: " + level;
 
         enemyManager.DeleteAllEnemies();
-        StoreInputValues();
+        ClearTilemap();
 
+        if (!GetValues()) { return;}
+
+        GetValues();
+
+        Debug.Log(m_walkerCount + " walk");
+        Debug.Log(m_ySize + " y");
+        Debug.Log(m_xSize + " x");
+        Debug.Log(maxStepCount + " walkerSteps");
+
+        //m_grid = new Grid(m_xSize, m_ySize);
         m_grid = new Grid(m_xSize, m_ySize);
         origin = RandomStartPoint();
 
         m_walkers = null;
         m_walkers = new List<Walker>();
 
+        Debug.Log((int)origin.x);
+        Debug.Log((int)origin.y);
         for (int i = 0; i < m_walkerCount; i++)
         {
             m_walkers.Add(new Walker(m_grid.cells[(int)origin.x, (int)origin.y], maxStepCount));
@@ -112,8 +132,10 @@ public class GridManager : MonoBehaviour
         MoveTick();
 
     }
-    private void StoreInputValues()
+
+    private bool GetValues()
     {
+
         string maxSteps = maxStepsInputField.text;
         int.TryParse(maxSteps, out maxStepCount);
 
@@ -126,16 +148,49 @@ public class GridManager : MonoBehaviour
 
         string y = ySizeInputField.text;
         int.TryParse(y, out m_ySize); // Get Values From Input Fields
+
+
+        if ( maxStepCount < 10)
+        {
+            errorText.text = "Invalid max steps, enter a valid number greater than or equal to " + 10;
+            return false;
+        }
+
+        if ( m_walkerCount < 1)
+        {
+            errorText.text = "Invalid walker count, enter a valid number greater than or equal to " + 1;
+            return false;
+        }
+
+        if ( m_xSize < 6)
+        {
+            errorText.text = "Invalid x size, enter a valid number greater than or equal to " + 6;
+            return false;
+        }
+
+        if (m_ySize < 6)
+        {
+            errorText.text = "Invalid y size, enter a valid number greater than or equal to " + 6;
+            return false;
+        }
+
+        errorText.text = "";
+        return true;
     }
+
     private Vector2 RandomStartPoint()
     {
-        int x = Random.Range(1 + (m_xSize / 2), m_xSize - (m_xSize / 2));
-        int y = Random.Range(1 + (m_ySize / 2), m_ySize - (m_ySize / 2));
+
+        // int x = Random.Range((m_xSize / 2) - (m_xSize / 4), (m_xSize / 2) + (m_xSize / 4));
+        // int y = Random.Range((m_ySize / 2) - (m_ySize / 4), (m_ySize / 2) + (m_ySize / 4));
+
+        int x = m_xSize / 2;
+        int y = m_ySize / 2;
         origin = new Vector2(x, y);
         return origin;
     }
 
-    void MoveTick()
+    private void MoveTick()
     {
 
         //   yield return new WaitForSeconds(0.1f);
@@ -157,25 +212,21 @@ public class GridManager : MonoBehaviour
         }
         else
         {
-            //  m_drawWalkers = false;
-
-          
-            CreateRooms();
-            CreateTiles();
-            CheckForWalls();
-
-            player.StartPosition(origin);
-
-            // CreateRoom(14,14);
-            PlacePickup();
-
-            AddStartTile();
-            AddEndTile();
-
-           // GenerateCoinRoom(10, 10, 6);
+            WalkersFinished();
         }
 
 
+    }
+
+    private void WalkersFinished()
+    {
+        CreateRooms();
+        CreateTiles();
+        CheckForWalls();
+        player.StartPosition(origin);
+        PlacePickup();
+        AddStartTile();
+        AddEndTile();
     }
 
     private void CreateRooms()
@@ -210,15 +261,12 @@ public class GridManager : MonoBehaviour
 
     }
 
-    public GameObject stairsCollider;
-
     private void AddEndTile()
     {
 
         List<float> walkerDistances = new List<float>();
         for (int i = 0; i < m_walkers.Count; i++)
         {
-
             walkerDistances.Add(m_walkers[i].GetDistanceFrom(origin));
         }
 
@@ -240,16 +288,12 @@ public class GridManager : MonoBehaviour
 
     }
 
-
     void CreateTiles()
     {
-
-
         for (int x = 0; x < m_xSize; x++)
         {
             for (int y = 0; y < m_ySize; y++)
             {
-
 
                 if (tilemap.HasTile(new Vector3Int(x, y, 0)))
                 {
@@ -269,7 +313,6 @@ public class GridManager : MonoBehaviour
             }
         }
 
-
     }
     void CheckForWalls()
     {
@@ -285,13 +328,10 @@ public class GridManager : MonoBehaviour
                 if (m_grid.cells[x, y].traversed) continue;
 
 
-                bool isSurrounded = true;
-                bool leftEmpty = true;
-                bool rightEmpty = true;
-                bool upEmpty = true;
-                bool downEmpty = true;
+                bool isSurrounded = true, 
+                leftEmpty = true, rightEmpty = true, upEmpty = true, downEmpty = true;
 
-                // Check horizontal and vertical neighbors
+
                 if (m_grid.cells[x, y].GetNeighbour(Vector2.up) != null)
                 {
                     if (!m_grid.cells[x, y].GetNeighbour(Vector2.up).traversed)
@@ -453,7 +493,7 @@ public class GridManager : MonoBehaviour
 
     }
 
-    void PlacePickup()
+    private void PlacePickup()
     {
 
         for (int x = 0; x < m_xSize; x++)
@@ -489,7 +529,7 @@ public class GridManager : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.cyan;
+        Gizmos.color = Color.white;
         if (m_grid == null)
         {
             return;
@@ -502,36 +542,32 @@ public class GridManager : MonoBehaviour
                 Gizmos.DrawCube(new Vector3(iX, 0, iY), Vector3.one / 2);
             }
         }
-        Gizmos.color = Color.blue;
+        Gizmos.color = Color.red;
         for (int i = 0; i < m_walkers.Count; i++)
         {
             Gizmos.DrawSphere(new Vector3(m_walkers[i].position.x, 0, m_walkers[i].position.y), 0.5f);
         }
 
-
     }
 
-    bool CanCreate(ref int xStart, ref int yStart)
+    private bool CanCreate(ref int xStart, ref int yStart)
     {
-
-        Debug.Log(m_xSize);
 
         if (xStart >= (m_xSize - roomSizeX))
         {
-            xStart = m_xSize - roomSizeX - 5;
+            xStart = m_xSize - roomSizeX - 1 ;
         }
-
-        if (xStart < 2)
+        if (xStart < 1)
         {
-            xStart = 2;
+            xStart = 1;
         }
         if (yStart >= (m_ySize - roomSizeY))
         {
-            yStart = m_ySize - roomSizeY - 5;
+            yStart = m_ySize - roomSizeY - 1;
         }
-        if (yStart < 2)
+        if (yStart < 1)
         {
-            yStart = 2;
+            yStart = 1;
         }
 
         for (int x = xStart; x < xStart + roomSizeX; x++)
@@ -554,16 +590,9 @@ public class GridManager : MonoBehaviour
 
         bool canCreate = CanCreate(ref xStart, ref yStart);
 
-
         if (canCreate)
         {
-            Debug.Log("Creating Room at " + xStart + " " + yStart);
             GenerateRandomRoom(xStart, yStart);
-
-        }
-        else
-        {
-            Debug.Log("Cannot create at " + xStart + " " + yStart);
         }
     }
 
@@ -592,12 +621,10 @@ public class GridManager : MonoBehaviour
     void GenerateCoinRoom(int xStart, int yStart)
     {
 
-        Debug.Log("Generating Coin Room");
         for (int x = xStart; x < xStart + roomSizeX ; x++)
         {
             for (int y = yStart; y < yStart + roomSizeY ; y++)
             {
-                //  Debug.Log(x + " " + y);
 
                 int random = Random.Range(1, 3);
                 if (random == 1)
@@ -614,18 +641,12 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-
-
-    public GameObject enemyPrefab;
-    public EnemyManager enemyManager;
-
     void GenerateEnemyRoom(int xStart, int yStart)
     {
 
         int middleX = xStart + roomSizeX / 2;
         int middleY = yStart + roomSizeY / 2;
 
-        Debug.Log("Generating Enemy Room");
         for (int x = xStart; x < xStart + roomSizeX; x++)
         {
             for (int y = yStart; y < yStart + roomSizeY ; y++)
@@ -635,7 +656,7 @@ public class GridManager : MonoBehaviour
 
                 if (x >= middleX - 1 && x <= middleX + 1 && y >= middleY - 1 && y <= middleY + 1) // spawns 9 in the middle
                 {
-                    GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+                     Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
                 }
 
                 SpawnTile(x, y, "Middle");
@@ -645,7 +666,6 @@ public class GridManager : MonoBehaviour
 
             }
         }
-        #endregion
     }
 
     void SpawnTile(int x, int y, string name)

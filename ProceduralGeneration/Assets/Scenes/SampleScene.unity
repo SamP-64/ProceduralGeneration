@@ -392,21 +392,21 @@ MonoBehaviour:
   m_walkerCount: 5
   tilemap: {fileID: 1248534078}
   player: {fileID: 1762470006}
-  levelText: {fileID: 1299493309}
-  coinText: {fileID: 1128858203}
   empty: {fileID: 11400000, guid: 8bbc46ca98ff1674daeaabfd510a9d8c, type: 2}
+  stairsCollider: {fileID: 24541228}
+  enemyPrefab: {fileID: 1480368359}
+  enemyManager: {fileID: 263412382}
   xSizeInputField: {fileID: 767075612}
   ySizeInputField: {fileID: 1521669134}
   walkersInputField: {fileID: 2068184644}
   maxStepsInputField: {fileID: 1381327845}
+  levelText: {fileID: 1299493309}
+  coinText: {fileID: 1128858203}
   xRoomSlider: {fileID: 343743545}
   yRoomSlider: {fileID: 2095780042}
   xRoomSizeText: {fileID: 1631182818}
   yRoomSizeText: {fileID: 967756559}
   panel: {fileID: 1601421995}
-  stairsCollider: {fileID: 24541228}
-  enemyPrefab: {fileID: 1480368359}
-  enemyManager: {fileID: 263412382}
 --- !u!4 &263412381
 Transform:
   m_ObjectHideFlags: 0
@@ -1357,7 +1357,7 @@ PrefabInstance:
     - target: {fileID: 2308591255903010504, guid: fbe8a9f59caa7a84599728593943e947,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.978
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 2308591255903010504, guid: fbe8a9f59caa7a84599728593943e947,
         type: 3}

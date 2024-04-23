@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
 
         Bullet bullet = other.gameObject.GetComponent<Bullet>();
 
-        if (bullet != null)
+        if (bullet != null) //if collided object has bullet script
         {
             TakeDamage(10);
             Destroy(other.gameObject);
